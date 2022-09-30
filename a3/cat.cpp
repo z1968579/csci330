@@ -15,7 +15,6 @@
 #include <cstring>
 
 
-void output(int fd, char buffer[], ssize_t nr);
 void input(int fd, char buffer[]);
 
 using namespace std;
@@ -29,18 +28,17 @@ int main(int argc, char *argv[])
     {
         for(int i = 1; i < argc; i++) //loops for multiple files
         {
-            fd = open(argv[i], O_RDONLY, 0644);
-
             char buffer[10000];
 
             if (strcmp(argv[i],"-") == 0)//checks for - 
             {
-                input(0, buffer);
+                fd = STDIN_FILENO;
             }
             else 
             {
-                output(fd, buffer, nr);
+                fd = open(argv[i], O_RDONLY, 0644);
             }
+            input(fd, buffer);
         } 
     }
     else
@@ -50,28 +48,7 @@ int main(int argc, char *argv[])
     }
     return 0;
 }
-/* checks for error and prints out file
-@param fd is the file discriptor 
-@param buffer[] array that stores characters
-@param nr stores read. I dont think I even need this.*/
-void output(int fd, char buffer[], ssize_t nr)
-{        
 
-    nr = read(fd, buffer, 10000);   
-
-    if(nr == -1) 
-    {
-        perror("File Reading Error"); 
-        return;
-    } 
-  
-    ssize_t nw;
-    nw = write(1 , buffer, nr); 
-    cout << endl;
-
-    close(fd);
-    return;
-}
 /* when "-" case is true, takes user input.
 @param fd is the file discriptor 
 @param buffer[] array that stores characters */
