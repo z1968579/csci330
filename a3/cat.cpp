@@ -10,7 +10,7 @@
 #include <fcntl.h>
 #include <unistd.h> 
 #include <string.h>
-
+#define BUFFER_SIZE 4096
 int main(int argc, char *argv[])
 {
     int fd;
@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
     }
     for(int i = 1; i < argc; i++) //loops for multiple files
     {
-        char buffer[10000];
+        char buffer[BUFFER_SIZE];
         //Checks if file name is a dash 
         if (strcmp(argv[i],"-") == 0)
         {
@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
             fd = open(argv[i], O_RDONLY, 0644);
         }
         //Reads file
-        while ((nr = read(fd, buffer, 10000)) > 0)
+        while ((nr = read(fd, buffer, BUFFER_SIZE)) > 0)
         {
             nw = write(1, buffer, nr);
         }
