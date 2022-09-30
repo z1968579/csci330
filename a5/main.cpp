@@ -3,13 +3,12 @@
  * @author Jacob Rudawski z1968579
  * @brief CSCI 330 Assignment 5
  * @date 10/03/2022
- * 
- * 
  */
 #include <stdio.h> 
 #include <fcntl.h>
 #include <unistd.h> 
 #include <string.h>
+#include "dog.h"
 #define BUFFER_SIZE 4096
 
 int main(int argc, char *argv[])
