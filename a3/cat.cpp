@@ -78,11 +78,10 @@ void output(int fd, char buffer[], ssize_t nr)
 void input(int fd, char buffer[])
 {
     ssize_t nw;
-    int nr = read(fd, buffer, 10000);
-    while (nr > 0)
+    int nr;
+    while ((nr = read(fd, buffer, 10000)) > 0)
     {
       nw = write(1, buffer, nr);
-      nr = read(fd, buffer, 10000);
     }
     close(fd);
     return;
