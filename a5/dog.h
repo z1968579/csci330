@@ -6,14 +6,10 @@
  * @brief CSCI 330 Assignment 5
  * @date 10/03/2022
  */
-class dog
-{
-public:
 
-    dog();
-    void caesar();
-    void byte();
-    void hex();
-    void binary();
-};
+void caesar();
+void byte();
+void hex();
+void binary();
+
 #endif
