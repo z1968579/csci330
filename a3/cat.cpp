@@ -6,26 +6,20 @@
 //  Created by Jacob Rudawski z1968579
 //
 //***************************************************************************
-#include <iostream>
-#include <sys/types.h> 
-#include <sys/stat.h>
+#include <stdio.h> 
 #include <fcntl.h>
 #include <unistd.h> 
-#include <cstring>
-
-using namespace std;
+#include <string.h>
 
 int main(int argc, char *argv[])
 {
     int fd;
     ssize_t nr, nw;
-
     if(argc == 1) //checks for no file input
     {
-        cout << "No files listed as argument" << endl; 
+        perror("No files listed as argument"); 
         return 1;
     }
-    
     for(int i = 1; i < argc; i++) //loops for multiple files
     {
         char buffer[10000];
