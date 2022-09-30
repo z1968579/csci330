@@ -7,15 +7,11 @@
 //
 //***************************************************************************
 #include <iostream>
-#include <iomanip>
 #include <sys/types.h> 
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h> 
 #include <cstring>
-
-
-void input(int fd, char buffer[]);
 
 using namespace std;
 
@@ -24,34 +20,34 @@ int main(int argc, char *argv[])
     int fd;
     ssize_t nr, nw;
 
-    if(argc > 1) //checks for no file input
-    {
-        for(int i = 1; i < argc; i++) //loops for multiple files
-        {
-            char buffer[10000];
-            //Checks if file name is a dash 
-            if (strcmp(argv[i],"-") == 0)
-            {
-                fd = STDIN_FILENO;
-            }
-            else 
-            {
-                fd = open(argv[i], O_RDONLY, 0644);
-            }
-            //Reads file
-            while ((nr = read(fd, buffer, 10000)) > 0)
-            {
-                nw = write(1, buffer, nr);
-            }
-            //Closes file 
-            if (fd == STDIN_FILENO)
-                close(fd);
-        } 
-    }
-    else
+    if(argc == 1) //checks for no file input
     {
         cout << "No files listed as argument" << endl; 
-        exit(1);
+        return 1;
     }
+    
+    for(int i = 1; i < argc; i++) //loops for multiple files
+    {
+        char buffer[10000];
+        //Checks if file name is a dash 
+        if (strcmp(argv[i],"-") == 0)
+        {
+            fd = STDIN_FILENO;
+        }
+        else 
+        {
+            fd = open(argv[i], O_RDONLY, 0644);
+        }
+        //Reads file
+        while ((nr = read(fd, buffer, 10000)) > 0)
+        {
+            nw = write(1, buffer, nr);
+        }
+        //Closes file 
+        if (fd == STDIN_FILENO)
+        {
+            close(fd);
+        }
+    } 
     return 0;
 }
