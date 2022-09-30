@@ -22,15 +22,15 @@ using namespace std;
 int main(int argc, char *argv[])
 {
     int fd;
-    ssize_t nr;
+    ssize_t nr, nw;
 
     if(argc > 1) //checks for no file input
     {
         for(int i = 1; i < argc; i++) //loops for multiple files
         {
             char buffer[10000];
-
-            if (strcmp(argv[i],"-") == 0)//checks for - 
+            //Checks if file name is a dash 
+            if (strcmp(argv[i],"-") == 0)
             {
                 fd = STDIN_FILENO;
             }
@@ -38,7 +38,14 @@ int main(int argc, char *argv[])
             {
                 fd = open(argv[i], O_RDONLY, 0644);
             }
-            input(fd, buffer);
+            //Reads file
+            while ((nr = read(fd, buffer, 10000)) > 0)
+            {
+                nw = write(1, buffer, nr);
+            }
+            //Closes file 
+            if (fd == STDIN_FILENO)
+                close(fd);
         } 
     }
     else
@@ -47,19 +54,4 @@ int main(int argc, char *argv[])
         exit(1);
     }
     return 0;
-}
-
-/* when "-" case is true, takes user input.
-@param fd is the file discriptor 
-@param buffer[] array that stores characters */
-void input(int fd, char buffer[])
-{
-    ssize_t nw;
-    int nr;
-    while ((nr = read(fd, buffer, 10000)) > 0)
-    {
-      nw = write(1, buffer, nr);
-    }
-    close(fd);
-    return;
 }
