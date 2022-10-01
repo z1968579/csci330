@@ -14,4 +14,4 @@ cat: cat.cpp
 
 # Pseudo-target to remove object code and executable files
 clean:
-	rm -f cat *.o
+	rm	 -f cat *.o

@@ -14,10 +14,10 @@ dog: main.o dog.o
 
 # Rules to compile source code file to object code
 main.o: main.cpp dog.h
-	$(CXX) $(CXXFLAGS) -o $@ $^
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
 dog.o: dog.cpp dog.h
-	$(CXX) $(CXXFLAGS) -o $@ $^
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
 # Pseudo-target to remove object code and executable files
 clean:

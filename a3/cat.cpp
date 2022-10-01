@@ -14,12 +14,13 @@
 int main(int argc, char *argv[])
 {
     int fd;
-    ssize_t nr, nw;
+    ssize_t nr;
     if(argc == 1) //checks for no file input
     {
         perror("No files listed as argument"); 
         return 1;
     }
+
     for(int i = 1; i < argc; i++) //loops for multiple files
     {
         char buffer[BUFFER_SIZE];
@@ -35,13 +36,14 @@ int main(int argc, char *argv[])
         //Reads file
         while ((nr = read(fd, buffer, BUFFER_SIZE)) > 0)
         {
-            nw = write(1, buffer, nr);
+            write(1, buffer, nr);
         }
         //Closes file 
         if (fd == STDIN_FILENO)
         {
             close(fd);
         }
+        
     } 
     return 0;
 }
