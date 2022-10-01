@@ -19,12 +19,19 @@ void hex()
 {
 
 }
-void binary()
+void binary(char* buffer, ssize_t buffer_size)
 {
     
 }
 
 ssize_t min (ssize_t a, ssize_t b)
 {
-    return (a < b ) ? a : b;
+    if (a < b)
+    {
+        return a;
+    }
+    else
+    {
+        return b;
+    }
 }

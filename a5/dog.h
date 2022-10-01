@@ -13,7 +13,7 @@
 void caesar();
 void byte();
 void hex();
-void binary();
+void binary(char*, ssize_t);
 ssize_t min(ssize_t,ssize_t);
 
 #endif
