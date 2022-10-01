@@ -10,12 +10,23 @@
 #include <unistd.h> 
 #include <string.h>
 #include "dog.h"
+#include <cstdlib>
+using namespace std;
 
 int main(int argc, char *argv[])
 {
-    int fd;
+    int fd, opt;
     ssize_t nr;
-    char buffer[BUFFER_SIZE];
+    char *buffer = nullptr;
+    ssize_t buffer_size = SIZE_BUFFER;
+    ssize_t user_bytes = 0;
+    ssize_t total_read=0;
+
+    bool nflag = false, 
+    cflag = false, 
+    rflag = false, 
+    Xflag = false, 
+    Bflag = false;
 
     if(argc == 1) //checks for no file input
     {
@@ -24,38 +35,41 @@ int main(int argc, char *argv[])
     }
     for(int i = 1; i < argc; i++) //loops for multiple files
     {
-        int opt; 
         char optstring[] = "b:n:C:r:XB";
         while((opt = getopt(argc, argv, optstring)) != -1)  //looks for -c in any order 
         { 
             switch(opt) 
             { 
             case 'b':
-
+                buffer_size = atoi(optarg);
                 break;
             case 'n':
-
+                user_bytes = atoi(optarg);
+                nflag = true;
                 break;
             case 'C':
-               // d.caesar();
+                cflag = true;
                 break;
             case 'r':
+                rflag = true;
 
                 break;
             case 'X':
-
+                Xflag = true;
                 break;
 
             case 'B':
-
+                Bflag = true;
                 break;
             default:
 
                 break;
             }
         }
-        //Checks if file name is a dash 
     } 
+
+    buffer = new char[buffer_size];
+
     for (int i = optind; i < argc; i++)
     {
         if (strcmp(argv[optind],"-") == 0)
@@ -66,10 +80,32 @@ int main(int argc, char *argv[])
         {
             fd = open(argv[i], O_RDONLY, 0644);
         }
+
+
         //Reads file
-        while ((nr = read(fd, buffer, BUFFER_SIZE)) > 0)
+        while ((nr = read(fd, buffer, nflag ? min(buffer_size, (user_bytes - total_read)) : buffer_size)) > 0)
         {
+            
+            total_read += nr;
+            
+            if (cflag == true )
+            {
+
+            }
+            if (rflag == true)
+            {
+
+            }
+            if (Xflag == true)
+            {
+
+            }
+            if (Bflag == true)
+            {
+
+            }
             write(1, buffer, nr);
+            
         }
         //Closes file 
         if (fd == STDIN_FILENO)
@@ -77,5 +113,6 @@ int main(int argc, char *argv[])
             close(fd);
         }
     }
+    delete[] buffer;  
     return 0;
 }
