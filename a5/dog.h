@@ -8,12 +8,20 @@
  */
 //char* buffer and buffer length
 #include <sys/types.h> 
+#include <iostream>
+#include <stdio.h> 
+#include <fcntl.h>
+#include <unistd.h> 
+#include <string.h>
+#include <cstdlib>
+#include <stdlib.h>
+
 #define SIZE_BUFFER 4096
 
 void caesar(char*, ssize_t, ssize_t);
 void byte(char*, ssize_t, ssize_t);
-void hex(char*, ssize_t);
-void binary(char*, ssize_t);
+char* hex(char*, ssize_t);
+char* binary(char*, ssize_t);
 ssize_t min(ssize_t,ssize_t);
 
 #endif

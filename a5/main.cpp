@@ -4,13 +4,9 @@
  * @brief CSCI 330 Assignment 5
  * @date 10/03/2022
  */
-#include <iostream>
-#include <stdio.h> 
-#include <fcntl.h>
-#include <unistd.h> 
-#include <string.h>
+
 #include "dog.h"
-#include <cstdlib>
+
 
 using namespace std;
 
@@ -129,7 +125,7 @@ int main(int argc, char *argv[])
             }
             if (Bflag == true)
             {
-                binary(buffer, nr);
+                buffer = binary(buffer, nr);
             }
             write(1, buffer, nr);
             
