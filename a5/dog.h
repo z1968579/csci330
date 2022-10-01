@@ -10,9 +10,9 @@
 #include <sys/types.h> 
 #define SIZE_BUFFER 4096
 
-void caesar();
-void byte();
-void hex();
+void caesar(char*, ssize_t, ssize_t);
+void byte(char*, ssize_t, ssize_t);
+void hex(char*, ssize_t);
 void binary(char*, ssize_t);
 ssize_t min(ssize_t,ssize_t);
 
