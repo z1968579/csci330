@@ -119,7 +119,6 @@ int main(int argc, char *argv[])
             {
                 caesar(buffer, nr, shift_size);
             }
-
             if (rflag == true)
             {
                 byte(buffer, nr, shift_size);
@@ -130,7 +129,6 @@ int main(int argc, char *argv[])
             }
             if (Bflag == true)
             {
-                
                 binary(buffer, nr);
             }
             write(1, buffer, nr);
