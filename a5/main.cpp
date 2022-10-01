@@ -23,6 +23,36 @@ int main(int argc, char *argv[])
     for(int i = 1; i < argc; i++) //loops for multiple files
     {
         char buffer[BUFFER_SIZE];
+        int opt; 
+        char optstring[] = "b:n:C:r:XB";
+        while((opt = getopt(argc, argv, optstring)) != -1)  //looks for -c in any order 
+        { 
+            switch(opt) 
+            { 
+            case 'b':
+
+                break;
+            case 'n':
+
+                break;
+            case 'C':
+               // d.caesar();
+                break;
+            case 'r':
+
+                break;
+            case 'X':
+
+                break;
+
+            case 'B':
+
+                break;
+            default:
+
+                break;
+            }
+        }
         //Checks if file name is a dash 
         if (strcmp(argv[i],"-") == 0)
         {
