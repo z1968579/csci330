@@ -4,12 +4,12 @@
  * @brief CSCI 330 Assignment 5
  * @date 10/03/2022
  */
+
 #include <stdio.h> 
 #include <fcntl.h>
 #include <unistd.h> 
 #include <string.h>
 #include "dog.h"
-#define BUFFER_SIZE 4096
 
 int main(int argc, char *argv[])
 {
@@ -23,36 +23,6 @@ int main(int argc, char *argv[])
     for(int i = 1; i < argc; i++) //loops for multiple files
     {
         char buffer[BUFFER_SIZE];
-        int opt; 
-        char optstring[] = "b:n:C:r:XB"; //declares opt and created cstring for -c detection
-        while((opt = getopt(argc, argv, optstring)) != -1)  //looks for -c in any order 
-        { 
-            switch(opt) 
-            { 
-            case 'b':
-
-                break;
-            case 'n':
-
-                break;
-            case 'C':
-               // d.caesar();
-                break;
-            case 'r':
-
-                break;
-            case 'X':
-
-                break;
-
-            case 'B':
-
-                break;
-            default:
-
-                break;
-            }
-        }
         //Checks if file name is a dash 
         if (strcmp(argv[i],"-") == 0)
         {
@@ -72,6 +42,7 @@ int main(int argc, char *argv[])
         {
             close(fd);
         }
+        
     } 
     return 0;
 }
