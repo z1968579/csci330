@@ -15,6 +15,8 @@ int main(int argc, char *argv[])
 {
     int fd;
     ssize_t nr;
+    char buffer[BUFFER_SIZE];
+
     if(argc == 1) //checks for no file input
     {
         perror("No files listed as argument"); 
@@ -22,7 +24,6 @@ int main(int argc, char *argv[])
     }
     for(int i = 1; i < argc; i++) //loops for multiple files
     {
-        char buffer[BUFFER_SIZE];
         int opt; 
         char optstring[] = "b:n:C:r:XB";
         while((opt = getopt(argc, argv, optstring)) != -1)  //looks for -c in any order 
@@ -54,7 +55,10 @@ int main(int argc, char *argv[])
             }
         }
         //Checks if file name is a dash 
-        if (strcmp(argv[i],"-") == 0)
+    } 
+    for (int i = optind; i < argc; i++)
+    {
+        if (strcmp(argv[optind],"-") == 0)
         {
             fd = STDIN_FILENO;
         }
@@ -72,7 +76,6 @@ int main(int argc, char *argv[])
         {
             close(fd);
         }
-        
-    } 
+    }
     return 0;
 }
