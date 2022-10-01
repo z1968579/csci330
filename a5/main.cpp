@@ -17,14 +17,17 @@ using namespace std;
 int main(int argc, char *argv[])
 {
     int fd, opt;
-    ssize_t nr;
+
     char *buffer = nullptr;
+
+    ssize_t nr;
     ssize_t buffer_size = SIZE_BUFFER;
     ssize_t user_bytes = 0;
     ssize_t total_read = 0;
+    ssize_t shift_size = 0;
 
     bool nflag = false, 
-    cflag = false, 
+    Cflag = false, 
     rflag = false, 
     Xflag = false, 
     Bflag = false;
@@ -49,9 +52,10 @@ int main(int argc, char *argv[])
                 nflag = true;
                 break;
             case 'C':
-                cflag = true;
+                Cflag = true;
+                shift_size = atoi(optarg);
 
-                if (cflag == true && rflag == true)
+                if (Cflag == true && rflag == true)
                 {
                     cerr << "Warning: -C and -r were given exiting" << endl;
                     return 3;
@@ -59,8 +63,8 @@ int main(int argc, char *argv[])
                 break;
             case 'r':
                 rflag = true;
-
-                if (cflag == true && rflag == true)
+                shift_size = atoi(optarg);
+                if (Cflag == true && rflag == true)
                 {
                     cerr << "Warning: -C and -r were given exiting" << endl;
                     return 4;
@@ -111,23 +115,23 @@ int main(int argc, char *argv[])
             
             total_read += nr;
             
-            if (cflag == true )
+            if (Cflag == true )
             {
-                
+                caesar(buffer, buffer_size, shift_size);
             }
 
             if (rflag == true)
             {
-                
+                byte(buffer, buffer_size, shift_size);
             }
             if (Xflag == true)
             {
-                
+                hex(buffer, buffer_size);
             }
             if (Bflag == true)
             {
                 
-                binary(buffer, buffer_size );
+                binary(buffer, buffer_size);
             }
             write(1, buffer, nr);
             

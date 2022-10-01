@@ -7,15 +7,15 @@
 
 #include "dog.h"
 
-void caesar()
+void caesar(char* buffer, ssize_t buffer_size, ssize_t shift_size)
 {
 
 }
-void byte()
+void byte(char* buffer, ssize_t buffer_size, ssize_t shift_size)
 {
 
 }
-void hex()
+void hex(char* buffer, ssize_t buffer_size)
 {
 
 }
