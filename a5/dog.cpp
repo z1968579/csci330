@@ -9,11 +9,27 @@
 
 void caesar(char* buffer, ssize_t len, ssize_t shift_size)
 {
-
+    char t;
+    for (int i = 0; i <= len - 1; i++)
+    {
+        t = buffer[i];
+        if(isupper(t))
+        {
+            t = ((t - 'A' + shift_size) % 26) + 'A';
+        }
+        else if (islower(t))
+        {
+            t = ((t - 'a' + shift_size) % 26 + 'a');
+        }
+        buffer[i] = t;
+    }
 }
 void byte(char* buffer, ssize_t len, ssize_t shift_size)
 {
-
+    for (int i = 0; i <= len - 1; i++)
+    {
+        buffer[i] = (((int) buffer[i] + shift_size) % 256);
+    }
 }
 void hex(char* buffer, ssize_t len, char* out)
 {
