@@ -15,6 +15,8 @@ int main(int argc, char *argv[])
     int fd, opt;
 
     char *buffer = nullptr;
+    char *hex_buffer = nullptr;
+    char *binary_buffer = nullptr;
 
     ssize_t nr;
     ssize_t buffer_size = SIZE_BUFFER;
@@ -94,7 +96,7 @@ int main(int argc, char *argv[])
 
     buffer = new char[buffer_size];
     hex_buffer = new char[buffer_size * 2];
-    binary_buffer = new char[buffer_size * 8];
+    binary_buffer = new char[buffer_size * 8 + 1];
 
     for (int i = optind; i < argc; i++)
     {
@@ -123,13 +125,18 @@ int main(int argc, char *argv[])
             }
             if (Xflag == true)
             {
-                hex(buffer, nr);
+                hex(buffer, nr, hex_buffer);
+                write(1, hex_buffer, nr * 4);
             }
-            if (Bflag == true)
+            else if (Bflag == true)
             {
-                buffer = binary(buffer, nr);
+                binary(buffer, nr, binary_buffer);
+                write(1, binary_buffer, nr * 8);
             }
+            else
+            {
             write(1, buffer, nr);
+            }
             
         }
         //Closes file 
@@ -139,5 +146,7 @@ int main(int argc, char *argv[])
         }
     }
     delete[] buffer;  
+    delete[] hex_buffer;
+    delete[] binary_buffer;
     return 0;
 }

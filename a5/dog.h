@@ -15,14 +15,13 @@
 #include <string.h>
 #include <cstdlib>
 #include <stdlib.h>
-#include <bitset>
 
 #define SIZE_BUFFER 4096
 
 void caesar(char*, ssize_t, ssize_t);
 void byte(char*, ssize_t, ssize_t);
-char* hex(char*, ssize_t,char*);
-char* binary(char*, ssize_t,char*);
+void hex(char*, ssize_t,char*);
+void binary(char*, ssize_t,char*);
 ssize_t min(ssize_t,ssize_t);
 
 #endif

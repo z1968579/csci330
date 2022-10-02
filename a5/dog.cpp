@@ -15,32 +15,24 @@ void byte(char* buffer, ssize_t len, ssize_t shift_size)
 {
 
 }
-char* hex(char* buffer, ssize_t len, char* out)
+void hex(char* buffer, ssize_t len, char* out)
 {
-    return buffer;
-}
-char* binary(char* buffer, ssize_t len, char* out)
-{   
-    
-    char* binary = new char[len * 8 + 1]; 
-    binary[0] = '\0';
-    for(ssize_t i = 0; i < len; ++i) 
+    char hexadecimal[] = "0123456789adcdef";
+    for(int i = 0; i <= len - 1; i++)
     {
-        char ch = buffer[i];
-        for(int j = 7; j >= 0; --j)
+        out[i * 2 + 0] = hexadecimal[(buffer[i] & 0xF0) >> 4];
+        out[i * 2 + 1] = hexadecimal[(buffer[i] & 0x0F) >> 0];
+    }
+}
+void binary(char* buffer, ssize_t len, char* out)
+{   
+    for(int i = 0; i <= len - 1; i++)
+    {
+        for (int j = 0; j < 8; j++)
         {
-        
-            if(ch & (1 << j)) 
-            {
-                strcat(binary,"1");
-            } 
-            else 
-            {
-                strcat(binary,"0");
-            }
+        out[i * 8 + j] = ((buffer[i] & (1 << (7 - j))) >> (7 - j)) + 48;
         }
     }
-    return binary;
 }
 
 ssize_t min (ssize_t a, ssize_t b)
