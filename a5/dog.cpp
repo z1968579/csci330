@@ -7,28 +7,35 @@
 
 #include "dog.h"
 
-void caesar(char* buffer, ssize_t nr, ssize_t shift_size)
+void caesar(char* buffer, ssize_t len, ssize_t shift_size)
 {
 
 }
-void byte(char* buffer, ssize_t nr, ssize_t shift_size)
+void byte(char* buffer, ssize_t len, ssize_t shift_size)
 {
 
 }
-char* hex(char* buffer, ssize_t nr)
+char* hex(char* buffer, ssize_t len, char* out)
 {
     return buffer;
 }
-char* binary(char* buffer, ssize_t nr)
+char* binary(char* buffer, ssize_t len, char* out)
 {   
-    char *binary = (char*) malloc(nr*8 + 1); // each char is one byte (8 bits) and + 1 at the end for null terminator
+    
+    char* binary = new char[len * 8 + 1]; 
     binary[0] = '\0';
-    for(ssize_t i = 0; i < nr; ++i) {
+    for(ssize_t i = 0; i < len; ++i) 
+    {
         char ch = buffer[i];
-        for(int j = 7; j >= 0; --j){
-            if(ch & (1 << j)) {
+        for(int j = 7; j >= 0; --j)
+        {
+        
+            if(ch & (1 << j)) 
+            {
                 strcat(binary,"1");
-            } else {
+            } 
+            else 
+            {
                 strcat(binary,"0");
             }
         }

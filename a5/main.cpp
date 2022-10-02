@@ -93,6 +93,8 @@ int main(int argc, char *argv[])
     } 
 
     buffer = new char[buffer_size];
+    hex_buffer = new char[buffer_size * 2];
+    binary_buffer = new char[buffer_size * 8];
 
     for (int i = optind; i < argc; i++)
     {
