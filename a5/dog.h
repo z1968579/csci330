@@ -22,6 +22,7 @@ void caesar(char*, ssize_t, ssize_t);
 void byte(char*, ssize_t, ssize_t);
 void hex(char*, ssize_t,char*);
 void binary(char*, ssize_t,char*);
+void digit(char*);
 ssize_t min(ssize_t,ssize_t);
 
 #endif

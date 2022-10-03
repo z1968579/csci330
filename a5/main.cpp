@@ -7,8 +7,8 @@
 
 #include "dog.h"
 
-
-using namespace std;
+using std::cerr;
+using std::endl;
 
 int main(int argc, char *argv[])
 {
@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
 
     if(argc == 1) //checks for no file input
     {
-        perror("No files listed as argument"); 
+        cerr << "No files listed as argument" << endl;
         return 1;
     }
     for(int i = 1; i < argc; i++) //loops for multiple files
@@ -43,16 +43,18 @@ int main(int argc, char *argv[])
             switch(opt) 
             { 
             case 'b':
+                digit(optarg);
                 buffer_size = atoi(optarg);
                 break;
             case 'n':
+                digit(optarg);
                 user_bytes = atoi(optarg);
                 nflag = true;
                 break;
             case 'C':
-                Cflag = true;
+                digit(optarg);
                 shift_size = atoi(optarg);
-
+                Cflag = true;
                 if (Cflag == true && rflag == true)
                 {
                     cerr << "Warning: -C and -r were given exiting" << endl;
@@ -60,6 +62,7 @@ int main(int argc, char *argv[])
                 }
                 break;
             case 'r':
+                digit(optarg);
                 rflag = true;
                 shift_size = atoi(optarg);
                 if (Cflag == true && rflag == true)
@@ -70,7 +73,6 @@ int main(int argc, char *argv[])
                 break;
             case 'X':
                 Xflag = true;
-
                 if (Xflag == true && Bflag == true)
                 {
                     cerr << "Warning: -X and -B were given exiting" << endl;
@@ -80,7 +82,6 @@ int main(int argc, char *argv[])
 
             case 'B':
                 Bflag = true;
-
                 if (Xflag == true && Bflag == true)
                 {
                     cerr << "Warning: -X and -B were given exiting" << endl;

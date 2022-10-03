@@ -50,7 +50,16 @@ void binary(char* buffer, ssize_t len, char* out)
         }
     }
 }
-
+void digit(char* optarg)
+{
+    int i = 0;
+    char arg = optarg[i];
+    if (isdigit(arg) == false)
+    {
+        std::cerr << "Error: not a valid argument for option" << std::endl;
+        exit(0);
+    }
+}
 ssize_t min (ssize_t a, ssize_t b)
 {
     if (a < b)
