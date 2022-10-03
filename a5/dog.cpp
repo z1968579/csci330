@@ -15,11 +15,11 @@ void caesar(char* buffer, ssize_t len, ssize_t shift_size)
         t = buffer[i];
         if(isupper(t))
         {
-            t = ((t - 'A' + shift_size) % 26) + 'A';
+            t = ((t - 'A' + ((shift_size % 26) + 26)) % 26) + 'A';
         }
         else if (islower(t))
         {
-            t = ((t - 'a' + shift_size) % 26 + 'a');
+            t = ((t - 'a' + ((shift_size % 26) + 26)) % 26) + 'a';
         }
         buffer[i] = t;
     }
