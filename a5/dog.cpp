@@ -7,67 +7,107 @@
 
 #include "dog.h"
 
-void caesar(char* buffer, ssize_t len, ssize_t shift_size)
+/**
+ * @brief caesar shift function
+ * 
+ * @param buffer pointer to buffer
+ * @param len length of buffer or nr
+ * @param shift how much to shift by
+ */
+void caesar(char* buffer, ssize_t len, ssize_t shift)
 {
-    char t;
-    for (int i = 0; i <= len - 1; i++)
+    char t; //temp
+    for (int i = 0; i <= len - 1; i++) //loop through buffer
     {
         t = buffer[i];
+        //checks for either lowercase or uppercase then caesar shift
         if(isupper(t))
         {
-            t = ((t - 'A' + ((shift_size % 26) + 26)) % 26) + 'A';
+            t = ((t - 'A' + ((shift % 26) + 26)) % 26) + 'A';
         }
         else if (islower(t))
         {
-            t = ((t - 'a' + ((shift_size % 26) + 26)) % 26) + 'a';
+            t = ((t - 'a' + ((shift % 26) + 26)) % 26) + 'a';
         }
         buffer[i] = t;
     }
 }
-void byte(char* buffer, ssize_t len, ssize_t shift_size)
+/**
+ * @brief byte rotation function
+ * 
+ * @param buffer pointer to buffer
+ * @param len length of buffer or nr
+ * @param shift how much to shift by
+ */
+void byte(char* buffer, ssize_t len, ssize_t shift)
 {
     for (int i = 0; i <= len - 1; i++)
     {
-        buffer[i] = (((int) buffer[i] + shift_size) % 256);
+        buffer[i] = (((int) buffer[i] + shift) % 256); //byte rotation
     }
 }
+/**
+ * @brief changes hex_buffer for output
+ * 
+ * @param buffer pointer to buffer
+ * @param len length of buffer or nr
+ * @param out the hex_buffer that will be changed and outputed later
+ */
 void hex(char* buffer, ssize_t len, char* out)
 {
-    char hexadecimal[] = "0123456789adcdef";
+    char hexadecimal[] = "0123456789adcdef"; 
     for(int i = 0; i <= len - 1; i++)
     {
-        out[i * 2 + 0] = hexadecimal[(buffer[i] & 0xF0) >> 4];
-        out[i * 2 + 1] = hexadecimal[(buffer[i] & 0x0F) >> 0];
+        out[i * 2 + 0] = hexadecimal[(buffer[i] & 0xF0) >> 4]; //changes first spot to hex
+        out[i * 2 + 1] = hexadecimal[(buffer[i] & 0x0F) >> 0]; //changes second spot to hex
     }
 }
+/**
+ * @brief changes binary_buffer for output
+ * 
+ * @param buffer pointer to buffer
+ * @param len length of buffer or nr
+ * @param out the binary_buffer that will be changed and outputed later
+ */
 void binary(char* buffer, ssize_t len, char* out)
 {   
-    for(int i = 0; i <= len - 1; i++)
+    for(int i = 0; i <= len - 1; i++) 
     {
-        for (int j = 0; j < 8; j++)
+        for (int j = 0; j < 8; j++) //loops throught for all 8 bits in each byte
         {
-        out[i * 8 + j] = ((buffer[i] & (1 << (7 - j))) >> (7 - j)) + 48;
+            out[i * 8 + j] = ((buffer[i] & (1 << (7 - j))) >> (7 - j)) + 48; //converts each bit to 0 or 1
         }
     }
 }
+/**
+ * @brief checks if option has a valid argument
+ * 
+ * @param optarg argument for option
+ */
 void digit(char* optarg)
 {
-    int i = 0;
-    char arg = optarg[i];
+    char arg = optarg[0];
     if (isdigit(arg) == false)
     {
         std::cerr << "Error: not a valid argument for option" << std::endl;
         exit(0);
     }
 }
-ssize_t min (ssize_t a, ssize_t b)
+/**
+ * @brief finds min from two ints
+ * 
+ * @param x int 1
+ * @param y int 2
+ * @return ssize_t whichever is smaller
+ */
+ssize_t min (ssize_t x, ssize_t y)
 {
-    if (a < b)
+    if (x < y)
     {
-        return a;
+        return x;
     }
     else
     {
-        return b;
+        return y;
     }
 }

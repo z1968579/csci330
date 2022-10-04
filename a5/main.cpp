@@ -10,19 +10,19 @@
 using std::cerr;
 using std::endl;
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
     int fd, opt;
-
+    //buffers for options
     char *buffer = nullptr;
     char *hex_buffer = nullptr;
     char *binary_buffer = nullptr;
 
     ssize_t nr;
     ssize_t buffer_size = SIZE_BUFFER;
-    ssize_t user_bytes = 0;
-    ssize_t total_read = 0;
-    ssize_t shift_size = 0;
+    ssize_t user = 0;
+    ssize_t total = 0;
+    ssize_t shift = 0;
 
     bool nflag = false, 
     Cflag = false, 
@@ -38,36 +38,36 @@ int main(int argc, char *argv[])
     for(int i = 1; i < argc; i++) //loops for multiple files
     {
         char optstring[] = "b:n:C:r:XB";
-        while((opt = getopt(argc, argv, optstring)) != -1)  //looks for -c in any order 
+        while((opt = getopt(argc, argv, optstring)) != -1) 
         { 
             switch(opt) 
             { 
             case 'b':
-                digit(optarg);
-                buffer_size = atoi(optarg);
+                digit(optarg); //sends optarg to be error checked
+                buffer_size = atoi(optarg); //converts optarg into ssize_t and stores it in buffer
                 break;
             case 'n':
                 digit(optarg);
-                user_bytes = atoi(optarg);
+                user = atoi(optarg);
                 nflag = true;
                 break;
             case 'C':
                 digit(optarg);
-                shift_size = atoi(optarg);
+                shift = atoi(optarg); 
                 Cflag = true;
-                if (Cflag == true && rflag == true)
+                if (Cflag == true && rflag == true) 
                 {
-                    cerr << "Warning: -C and -r were given exiting" << endl;
+                    cerr << "Warning: -C and -r were given. Exiting" << endl;
                     return 3;
                 }
                 break;
             case 'r':
                 digit(optarg);
                 rflag = true;
-                shift_size = atoi(optarg);
+                shift = atoi(optarg);
                 if (Cflag == true && rflag == true)
                 {
-                    cerr << "Warning: -C and -r were given exiting" << endl;
+                    cerr << "Warning: -C and -r were given. Exiting" << endl;
                     return 4;
                 }
                 break;
@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
                 Xflag = true;
                 if (Xflag == true && Bflag == true)
                 {
-                    cerr << "Warning: -X and -B were given exiting" << endl;
+                    cerr << "Warning: -X and -B were given. Exiting" << endl;
                     return 5;
                 }
                 break;
@@ -84,7 +84,7 @@ int main(int argc, char *argv[])
                 Bflag = true;
                 if (Xflag == true && Bflag == true)
                 {
-                    cerr << "Warning: -X and -B were given exiting" << endl;
+                    cerr << "Warning: -X and -B were given. Exiting" << endl;
                     return 6;
                 }
                 break;
@@ -92,16 +92,17 @@ int main(int argc, char *argv[])
                 return 2;
                 break;
             }
+
         }
     } 
-
+    //creates new buffers for conditions
     buffer = new char[buffer_size];
     hex_buffer = new char[buffer_size * 2];
     binary_buffer = new char[buffer_size * 8 + 1];
 
     for (int i = optind; i < argc; i++)
     {
-        if (strcmp(argv[optind],"-") == 0)
+        if (strcmp(argv[optind],"-") == 0) //checks for - case
         {
             fd = STDIN_FILENO;
         }
@@ -109,20 +110,18 @@ int main(int argc, char *argv[])
         {
             fd = open(argv[i], O_RDONLY, 0644);
         }
-
-        //Reads file
-        while ((nr = read(fd, buffer, nflag ? min(buffer_size, (user_bytes - total_read)) : buffer_size)) > 0)
+        //Reads file and checks for nflag condition
+        while ((nr = read(fd, buffer, nflag ? min(buffer_size, (user - total)) : buffer_size)) > 0)
         {
             
-            total_read += nr;
-            
+            total += nr;
             if (Cflag == true )
             {
-                caesar(buffer, nr, shift_size);
+                caesar(buffer, nr, shift);
             }
             if (rflag == true)
             {
-                byte(buffer, nr, shift_size);
+                byte(buffer, nr, shift);
             }
             if (Xflag == true)
             {
