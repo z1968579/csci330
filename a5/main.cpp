@@ -43,16 +43,13 @@ int main(int argc, char* argv[])
             switch(opt) 
             { 
             case 'b':
-                digit(optarg); //sends optarg to be error checked
                 buffer_size = atoi(optarg); //converts optarg into ssize_t and stores it in buffer
                 break;
             case 'n':
-                digit(optarg);
                 user = atoi(optarg);
                 nflag = true;
                 break;
             case 'C':
-                digit(optarg);
                 shift = atoi(optarg); 
                 Cflag = true;
                 if (Cflag == true && rflag == true) 
@@ -62,7 +59,6 @@ int main(int argc, char* argv[])
                 }
                 break;
             case 'r':
-                digit(optarg);
                 rflag = true;
                 shift = atoi(optarg);
                 if (Cflag == true && rflag == true)
@@ -100,7 +96,7 @@ int main(int argc, char* argv[])
     hex_buffer = new char[buffer_size * 2];
     binary_buffer = new char[buffer_size * 8 + 1];
 
-    for (int i = optind; i < argc; i++)
+    for (int i = optind; i < argc ; i++)
     {
         if (strcmp(argv[optind],"-") == 0) //checks for - case
         {

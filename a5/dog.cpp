@@ -80,20 +80,6 @@ void binary(char* buffer, ssize_t len, char* out)
     }
 }
 /**
- * @brief checks if option has a valid argument
- * 
- * @param optarg argument for option
- */
-void digit(char* optarg)
-{
-    char arg = optarg[0];
-    if (isdigit(arg) == false)
-    {
-        std::cerr << "Error: not a valid argument for option" << std::endl;
-        exit(0);
-    }
-}
-/**
  * @brief finds min from two ints
  * 
  * @param x int 1
