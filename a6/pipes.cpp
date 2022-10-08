@@ -1,5 +1,4 @@
 #include <iostream>
-#include <fstream>
 #include <string.h>
 #include <sys/types.h>
 #include <sys/wait.h>
@@ -32,18 +31,17 @@ int main(int argc, char* argv[])
 
     while (quit[0] != 'Q' || quit[0] != 'q')
     {
-
         string string1, string2;
 
-        cout << "enter first string ";
+        cout << "command 1? ";
 
         getline(cin, string1);
 
-        cout << "enter second string ";
+        cout << "command 2? ";
 
         getline(cin, string2);
 
-        for( i =0 ; i<10;i++)
+        for( i = 0; i < 10; i++)
         {
             argv1[i] = NULL; // in the starting null all pointer
         }
@@ -71,30 +69,28 @@ int main(int argc, char* argv[])
                 a[j++] = string1[i];
             }
         }
-
-        for( i =0 ; i<10;i++)
+        for( i = 0 ; i < 10; i++)
         {
             argv2[i] = NULL; // in the starting null all pointer
         }
 
         k = 0, j = 0 , i = 0;
 
-        for(i=0;i <= string2.size() ; i++)
+        for(i = 0; i <= string2.size(); i++)
         {
             if(string2[i] == ' ' || string2[i] == '\0') // saparate command
-            {
-                
+            {  
                 a[j] = '\0';
 
-                strcpy(cmdn2[k++],a);
+                strcpy(cmdn2[k++], a);
 
-                argv2[k-1] = cmdn2[k-1]; // allocate each saparate argument to argv
+                argv2[k - 1] = cmdn2[k - 1]; // allocate each saparate argument to argv
 
                 wordc2++;
 
                 j = 0;
 
-                memset(a,0,sizeof(a));
+                memset(a, 0, sizeof(a));
             }
             else
             {
@@ -136,7 +132,7 @@ int main(int argc, char* argv[])
 
         cin.clear();
 
-        cin.ignore(255,'\n');
+        cin.ignore(255, '\n');
 
         cout << "Do you want to quit (quit/no)? "; //this part not working .
 
