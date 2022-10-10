@@ -12,21 +12,16 @@ int main()
 {
     int pfd[2];
 
-    int rs = pipe(pfd);
+    pid_t rs = pipe(pfd);
 
-    char cmdn1[10][20] = {0};
-    char cmdn2[10][20] = {0};
+    char cmd1[10][20] = {0};
+    char cmd2[10][20] = {0};
     char* argv1[10];
     char* argv2[10]; 
 
     int i, j = 0, k = 0;
 
     char a[20] = {0};
-
-    int wordc1 = 0;
-    int wordc2 = 0;
-
-    string quit;
 
     if (rs < 0)
     {
@@ -77,9 +72,9 @@ int main()
             {
                 a[j] = '\0';
 
-                strcpy(cmdn1[k++], a);
+                strcpy(cmd1[k++], a);
 
-                argv1[k - 1] = cmdn1[k - 1];
+                argv1[k - 1] = cmd1[k - 1];
                 j = 0;
 
                 memset(a, 0, sizeof(a));
@@ -102,9 +97,9 @@ int main()
             {  
                 a[j] = '\0';
 
-                strcpy(cmdn2[k++], a);
+                strcpy(cmd2[k++], a);
 
-                argv2[k - 1] = cmdn2[k - 1];
+                argv2[k - 1] = cmd2[k - 1];
                 j = 0;
 
                 memset(a, 0, sizeof(a));
@@ -121,7 +116,7 @@ int main()
             cerr << "Fork" << endl;
             return 2;
         }
-        if (rs == 0)
+        else if (rs == 0)
         {
             dup2(pfd[0], 0);
 
@@ -141,7 +136,6 @@ int main()
         cin.clear();
 
         cin.ignore(255, '\n');
-
 
     //}
     return 0;
