@@ -8,24 +8,22 @@
 
 using namespace std;
 
-int main(int argc, char* argv[])
+int main()
 {
     int pfd[2];
 
     int rs = pipe(pfd);
 
-    char op = 'y';
-    char cmdn1[10][20] = {0}; // saparate it
-    char cmdn2[10][20] = {0}; // saparate it
-    char* argv1[10] ; // give it to argv
-    char* argv2[10] ; // give it to argv
+    char cmdn1[10][20] = {0};
+    char cmdn2[10][20] = {0};
+    char* argv1[10];
+    char* argv2[10]; 
 
     int i, j = 0, k = 0;
 
     char a[20] = {0};
 
     int wordc1 = 0;
-
     int wordc2 = 0;
 
     string quit;
@@ -35,8 +33,8 @@ int main(int argc, char* argv[])
         cerr << "Pipe" << endl;
         return 1;
     }
-    while (quit[0] != 'Q' || quit[0] != 'q')
-    {
+    //while ()
+    //{
         string string1, string2;
 
         cout << "command 1? ";
@@ -46,6 +44,7 @@ int main(int argc, char* argv[])
             cout << "Ending" << endl;
             return 2;
         }
+
         cout << "command 2? ";
         getline(cin, string2);
         if(string2 == "END" )
@@ -53,9 +52,10 @@ int main(int argc, char* argv[])
             cout << "Ending" << endl;
             return 3;
         }
+
         if(string1 == "" || string2 == "")
         {
-            cout << "Ending" << endl;
+            cout << "Ending1" << endl;
             return 4;
         }
         if(string1.size() < 1 || string2.size() < 1)
@@ -63,25 +63,24 @@ int main(int argc, char* argv[])
             cerr << "ERROR" << endl;
             return 5;
         }
-        for( i = 0; i < 10; i++)
+
+        for (i = 0; i < 10; i++)
         {
-            argv1[i] = NULL; // in the starting null all pointer
+            argv1[i] = NULL;
         }
+        
         k = 0, j = 0, i = 0;
 
-        for(i = 0; i <= string1.size(); i++)
+        for (i = 0; i <= string1.size(); i++)
         {
-            if(string1[i] == ' ' || string1[i] == '\0') // saparate command
+            if(string1[i] == ' ' || string1[i] == '\0')
             {
                 a[j] = '\0';
 
                 strcpy(cmdn1[k++], a);
 
-                argv1[k - 1] = cmdn1[k - 1]; // allocate each saparate argument to argv
-
+                argv1[k - 1] = cmdn1[k - 1];
                 j = 0;
-
-                wordc1++;
 
                 memset(a, 0, sizeof(a));
             }
@@ -92,23 +91,20 @@ int main(int argc, char* argv[])
         }
         for(i = 0; i < 10; i++)
         {
-            argv2[i] = NULL; // in the starting null all pointer
+            argv2[i] = NULL;
         }
 
         k = 0, j = 0, i = 0;
 
         for(i = 0; i <= string2.size(); i++)
         {
-            if(string2[i] == ' ' || string2[i] == '\0') // saparate command
+            if(string2[i] == ' ' || string2[i] == '\0')
             {  
                 a[j] = '\0';
 
                 strcpy(cmdn2[k++], a);
 
-                argv2[k - 1] = cmdn2[k - 1]; // allocate each saparate argument to argv
-
-                wordc2++;
-
+                argv2[k - 1] = cmdn2[k - 1];
                 j = 0;
 
                 memset(a, 0, sizeof(a));
@@ -117,8 +113,8 @@ int main(int argc, char* argv[])
             {
                 a[j++] = string2[i];
             }
-
         }
+
         rs = fork();
         if (rs < 0)
         {
@@ -127,32 +123,17 @@ int main(int argc, char* argv[])
         }
         if (rs == 0)
         {
-            
-            // child gets here and handles "grep Villanova"
-
-            // replace standard input with input part of pipe
-
             dup2(pfd[0], 0);
 
-            // close unused hald of pipe
-
             close(pfd[1]);
-
-            // execute grep
 
             execvp(argv2[0], argv2);
         }
         else
         {
-            // parent gets here and handles "cat scores"
-            // replace standard output with output part of pipe
             dup2(pfd[1], 1);
 
-            // close unused unput half of pipe
-
             close(pfd[0]);
-
-            // execute cat
 
             execvp(argv1[0], argv1);
         }
@@ -161,9 +142,7 @@ int main(int argc, char* argv[])
 
         cin.ignore(255, '\n');
 
-        //out << "Do you want to quit (quit/no)? "; //this part not working .
 
-        //cin >> quit;
-    }
+    //}
     return 0;
 }
