@@ -122,15 +122,26 @@ int main()
 
             close(pfd[1]);
 
-            execvp(argv2[0], argv2);
+            rs = execvp(argv2[0], argv2);
+            if (rs < 0)
+            {
+                cerr << "execvp" << endl;
+                exit(rs);
+            }
         }
         else
         {
+            //wait(nullptr);
             dup2(pfd[1], 1);
 
             close(pfd[0]);
 
-            execvp(argv1[0], argv1);
+            rs = execvp(argv1[0], argv1);
+            if (rs < 0)
+            {
+                cerr << "execvp" << endl;
+                exit(rs);
+            }
         }
 
         cin.clear();
