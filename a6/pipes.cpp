@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <string.h>
 #include <sys/types.h>
 #include <sys/wait.h>
@@ -11,7 +12,7 @@ int main(int argc, char* argv[])
 {
     int pfd[2];
 
-    pipe(pfd);
+    int rs = pipe(pfd);
 
     char op = 'y';
     char cmdn1[10][20] = {0}; // saparate it
@@ -29,18 +30,39 @@ int main(int argc, char* argv[])
 
     string quit;
 
+    if (rs < 0)
+    {
+        cerr << "Pipe" << endl;
+        return 1;
+    }
     while (quit[0] != 'Q' || quit[0] != 'q')
     {
         string string1, string2;
 
         cout << "command 1? ";
-
         getline(cin, string1);
-
+        if(string1 == "END" )
+        {
+            cout << "Ending" << endl;
+            return 2;
+        }
         cout << "command 2? ";
-
         getline(cin, string2);
-
+        if(string2 == "END" )
+        {
+            cout << "Ending" << endl;
+            return 3;
+        }
+        if(string1 == "" || string2 == "")
+        {
+            cout << "Ending" << endl;
+            return 4;
+        }
+        if(string1.size() < 1 || string2.size() < 1)
+        {
+            cerr << "ERROR" << endl;
+            return 5;
+        }
         for( i = 0; i < 10; i++)
         {
             argv1[i] = NULL; // in the starting null all pointer
@@ -53,9 +75,9 @@ int main(int argc, char* argv[])
             {
                 a[j] = '\0';
 
-                strcpy(cmdn1[k++],a);
+                strcpy(cmdn1[k++], a);
 
-                argv1[k-1] = cmdn1[k-1]; // allocate each saparate argument to argv
+                argv1[k - 1] = cmdn1[k - 1]; // allocate each saparate argument to argv
 
                 j = 0;
 
@@ -63,18 +85,17 @@ int main(int argc, char* argv[])
 
                 memset(a, 0, sizeof(a));
             }
-
             else
             {
                 a[j++] = string1[i];
             }
         }
-        for( i = 0 ; i < 10; i++)
+        for(i = 0; i < 10; i++)
         {
             argv2[i] = NULL; // in the starting null all pointer
         }
 
-        k = 0, j = 0 , i = 0;
+        k = 0, j = 0, i = 0;
 
         for(i = 0; i <= string2.size(); i++)
         {
@@ -98,9 +119,15 @@ int main(int argc, char* argv[])
             }
 
         }
-        
-        if (fork() == 0)
+        rs = fork();
+        if (rs < 0)
         {
+            cerr << "Fork" << endl;
+            return 2;
+        }
+        if (rs == 0)
+        {
+            
             // child gets here and handles "grep Villanova"
 
             // replace standard input with input part of pipe
@@ -134,8 +161,9 @@ int main(int argc, char* argv[])
 
         cin.ignore(255, '\n');
 
-        cout << "Do you want to quit (quit/no)? "; //this part not working .
+        //out << "Do you want to quit (quit/no)? "; //this part not working .
 
-        cin >> quit;
+        //cin >> quit;
     }
+    return 0;
 }
