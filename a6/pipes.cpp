@@ -10,7 +10,7 @@ using namespace std;
 
 int main()
 {
-    int pfd[2], rs;
+    int pfd[2], rs, status;
 
     rs = pipe(pfd);
 
@@ -28,41 +28,44 @@ int main()
         cerr << "Pipe" << endl;
         return 1;
     }
-    string command1, command2;
-
-    cout << "command 1? ";
-    getline(cin, command1);
-    if(command1 == "END" )
-    {
-        cout << "Ending" << endl;
-        return 2;
-    }
-
-    cout << "command 2? ";
-    getline(cin, command2);
-    if(command2 == "END" )
-    {
-        cout << "Ending" << endl;
-        return 3;
-    }
-
-    if(command1 == "" || command2 == "")
-    {
-        cout << "Ending1" << endl;
-        return 4;
-    }
-    if(command1.size() < 1 || command2.size() < 1)
-    {
-        cerr << "ERROR" << endl;
-        return 5;
-    }
-    //while ()
+    bool flag = true
+    //while (flag)
     //{
+        string command1, command2;
+
+        cout << "command 1? ";
+        getline(cin, command1);
+        if(command1 == "END" )
+        {
+            cout << "Ending" << endl;
+            flag = false
+            return 2;
+        }
+
+        cout << "command 2? ";
+        getline(cin, command2);
+        if(command2 == "END" )
+        {
+            cout << "Ending" << endl;
+            flag = false
+            return 3;
+        }
+
+        if(command1 == "" || command2 == "")
+        {
+            cout << "Ending1" << endl;
+            return 4;
+        }
+        if(command1.size() < 1 || command2.size() < 1)
+        {
+            cerr << "ERROR" << endl;
+            return 5;
+        }
+
         for (i = 0; i < 10; i++)
         {
             argv1[i] = NULL;
             argv2[i] = NULL;
-
         } 
 
         j = 0, i = 0, k = 0;
@@ -126,48 +129,37 @@ int main()
                 cerr << "CHILD ERROR execvp" << endl;
                 exit(rs);
             }
-            //close(pfd[1]);
-
         }
-        else
+        else //parent 1
         {
-            dup2(pfd[1], 1);
-
-            close(pfd[0]);
-            rs = execvp(argv1[0], argv1);
-            if (rs < 0)
+            //pid_t pid2 = fork();
+            if (pid < 0)
             {
-                cerr << "PARENT ERROR execvp" << endl;
-                exit(rs);
+                cerr << "Fork" << endl;
+                return 2;
             }
-        }
-        /*cout << "command 1? ";
-        getline(cin, command1);
-        if(command1 == "END" )
-        {
-            cout << "Ending" << endl;
-            return 6;
-        }
+            //else if (pid2 == 0)
+            //{
+                
+            //}
+            //else //parent 2
+            //{
+                
+                dup2(pfd[1], 1);
 
-        cout << "command 2? ";
-        getline(cin, command2);
-        if(command2 == "END" )
-        {
-            cout << "Ending" << endl;
-            return 7;
+                close(pfd[0]);
+                rs = execvp(argv1[0], argv1);
+                if (rs < 0)
+                {
+                    cerr << "PARENT ERROR execvp" << endl;
+                    exit(rs);
+                }
+            //}
+            //dup2(pfd[1], 1);
+            close(pfd[0]);
+            close(pfd[1]);
+            wait(&status);
         }
-
-        if(command1 == "" || command2 == "")
-        {
-            cout << "Ending1" << endl;
-            return 8;
-        }
-        if(command1.size() < 1 || command2.size() < 1)
-        {
-            cerr << "ERROR" << endl;
-            return 9;
-        }*/
-
     //}
     cin.clear();
 
