@@ -25,8 +25,8 @@ int main()
     char* argv1[255];
     char* argv2[255]; 
 
-    int i = 0, j = 0, k = 0;
-
+    int j = 0, k = 0;
+    size_t i = 0;
     char temp[15] = {0};
 
     if (rs < 0)
@@ -34,7 +34,7 @@ int main()
         cerr << "Pipe" << endl;
         return 1;
     }
-    bool flag = true
+    //bool flag = true;
     //while (flag)
     //{
         string command1, command2;
@@ -44,7 +44,7 @@ int main()
         if(command1 == "END" )
         {
             cout << "Ending" << endl;
-            flag = false
+           // flag = false
             return 2;
         }
 
@@ -53,7 +53,7 @@ int main()
         if(command2 == "END" )
         {
             cout << "Ending" << endl;
-            flag = false
+            //flag = false
             return 3;
         }
 
