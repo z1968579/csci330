@@ -1,3 +1,9 @@
+ /**
+ * @file pipes.cpp
+ * @author Jacob Rudawski z1968579
+ * @brief CSCI 330 Assignment 6
+ * @date 10/10/2022
+ */
 #include <iostream>
 #include <fstream>
 #include <string.h>
@@ -72,7 +78,7 @@ int main()
 
         for (i = 0; i <= command1.size(); i++)
         {
-            if(command1[i] == ' ' || command1[i] == '\0')
+            if(command1[i] == ' ' || command1[i] == '\0') // looks for space of null
             {
                 temp[j] = '\0';
 
@@ -85,7 +91,7 @@ int main()
             }
             else
             {
-                temp[j++] = command1[i];
+                temp[j++] = command1[i]; //stores other characters in temp until if statment is true 
             }
         }
 
@@ -111,7 +117,7 @@ int main()
             }
         }
 
-        pid_t pid = fork();
+        pid_t pid = fork(); //forks
         if (pid < 0)
         {
             cerr << "Fork" << endl;
@@ -138,7 +144,7 @@ int main()
                 cerr << "Fork" << endl;
                 return 2;
             }
-            //else if (pid2 == 0)
+            //else if (pid2 == 0) ????
             //{
                 
             //}
@@ -160,7 +166,7 @@ int main()
             close(pfd[1]);
             wait(&status);
         }
-    //}
+    //} idk why loop does not work
     cin.clear();
 
     cin.ignore(255, '\n');
