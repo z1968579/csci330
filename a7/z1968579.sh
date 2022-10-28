@@ -1,7 +1,7 @@
 # Jacob Rudawski
 # z198579
 # CSCI 330
-# Due 10/28/22
+# 10/28/22
 
 #!/bin/bash
 
@@ -10,26 +10,6 @@ create()
 {
     printf "%s\n" "$2" > "$1"
     printf "new database created\n"
-}
-
-insert() 
-{
-    if [[ "$4" -gt 1921 && "$4" -lt 2029 ]]; 
-    then
-        if [[ ! -z "$2" && ! -z "$3" && ! -z "$5" ]]; 
-        then
-            printf "%s, %s, %s, %s\n" "$2" "$3" "$4" "$5" >> "$1"
-            printf "Successfully added a record to the database\n"
-
-        else
-            printf "ERROR: make, model, and color must be strings >0\n"
-            exit 1
-        fi
-
-    else
-        printf "ERROR: year of car must be between 1921 and 2029\n"
-        exit 1
-    fi
 }
 
 display() 
@@ -59,6 +39,26 @@ display()
     fi
 }
 
+insert() 
+{
+    if [[ "$4" -gt 1921 && "$4" -lt 2029 ]]; 
+    then
+        if [[ ! -z "$2" && ! -z "$3" && ! -z "$5" ]]; 
+        then
+            printf "%s, %s, %s, %s\n" "$2" "$3" "$4" "$5" >> "$1"
+            printf "Successfully added a record to the database\n"
+
+        else
+            printf "ERROR: make, model, and color must be strings >0\n"
+            exit 1
+        fi
+
+    else
+        printf "ERROR: year of car must be between 1921 and 2029\n"
+        exit 1
+    fi
+}
+
 # delete records from an existing database.
 delete() 
 {
@@ -68,7 +68,7 @@ delete()
         printf "ERROR: specify all, single #, or range # #\n"
         exit 1
     fi
-    # check against all, single, and range and sed to delete lines
+
     if  ["$2" = "all" ]; 
     then
         sed -i '1!d' "$1"
@@ -127,7 +127,7 @@ then
             create "$1" "$3"
         fi
 
-    elif [[ $2 = "insert" || $2 = "add" ]]; 
+    elif [[ $2 = "insert" ]]; 
     then
         # if they have all of the params
         if [ $# = 6 ]; 
@@ -161,34 +161,27 @@ else # interactive mode
     loop="y"
     while [ $loop = "y" ]; 
     do
-        # get the database name MUST BE SPECIFIED!
         read -p "Name of database to use: " db
         while [ -z "$db" ]; 
         do
-            read -p "Need name of database to use: " db
+            read -p "Need a name of database to use: " db
         done
 
         # now get the cmd
-        read -p "Enter command: create, insert, display, delete, count: " cmd
+        read -p "Enter a command (create, display, count, insert, delete): " cmd
 
         if [ "$cmd" = "create" ]; 
-        then # create
-            # read the params needed for create
-            read -p "Header for the db: " header
-            # check if they specified a header or just hit enter
-            if [ -z "$header" ]; 
-            then
-                header = "Untitled Database"
-            fi
+        then 
+            read -p "Header for the database: " header
 
             create "$db" "$header"
 
         elif [[ $cmd = "insert" || $cmd = "add" ]]; 
-        then # insert
-            # read in all of the params
+        then 
+            # insert
             read -p "Make: " make
             read -p "Model: " model
-            read -p "Year (1922-2028): " year
+            read -p "Year: " year
             read -p "Color: " color
             # call insert with params
             insert "$db" "$make" "$model" "$year" "$color"
@@ -196,7 +189,7 @@ else # interactive mode
         elif [ $cmd = "display" ]; 
         then # display
             # read in the display param
-            read -p "How many to show (one of all, single, or range): " option
+            read -p "How many to show (all, single, or range): " option
             # check which display mode they want, for each mode read the needed params and call display
             if [ $option = "single" ]; 
             then
@@ -214,19 +207,19 @@ else # interactive mode
                 display "$db" "$option"
 
             else
-                # invalid mode
-                printf "ERROR: %s  is not valid\n" "$option"
+                printf "ERROR: %s is not valid\n" "$option"
 
             fi
 
         elif [ $cmd = "count" ]; 
-        then # count
+        then 
+            # count
             count "$db"
 
         elif [ $cmd = "delete" ]; 
-        then # delete
-            # read the params for delete
-            read -p "How many to delete (one of all, single, or range): " option
+        then 
+            # delete
+            read -p "How many to delete (all, single, or range): " option
             # same logic as display but calling delte with the params gotten instead
             if [ $option = "single" ]; 
             then
@@ -244,7 +237,7 @@ else # interactive mode
                 delete "$db" "$option"
 
             else
-                printf "ERROR: %s  is not valid\n" "$option"
+                printf "ERROR: %s is not valid\n" "$option"
             fi
 
         else
