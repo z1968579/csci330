@@ -12,11 +12,12 @@ create()
     printf "new database created\n"
 }
 
+#displays the database
 display() 
 {
     if [ $# = 1 ]; 
     then
-        printf "ERROR: specify all, single #, or range # #\n"
+        printf "ERROR no arguement\n"
         exit 1
     fi
 
@@ -34,11 +35,12 @@ display()
         printf "\n"
 
     else
-        printf "ERROR: invalid display argument: %s\n" "$2"
+        printf "ERROR invalid display argument: %s\n" "$2"
         exit 1
     fi
 }
 
+#inserts a record into the database
 insert() 
 {
     if [[ "$4" -gt 1921 && "$4" -lt 2029 ]]; 
@@ -49,23 +51,23 @@ insert()
             printf "Successfully added a record to the database\n"
 
         else
-            printf "ERROR: make, model, and color must be strings >0\n"
+            printf "ERROR make, model, and color are not strings\n"
             exit 1
         fi
 
     else
-        printf "ERROR: year of car must be between 1921 and 2029\n"
+        printf "ERROR year of car must be between 1921 and 2029\n"
         exit 1
     fi
 }
 
-# delete records from an existing database.
+#delete records from an existing database
 delete() 
 {
-    # check if they dont specify
+    #check if they dont specify
     if [ $# = 1 ]; 
     then
-        printf "ERROR: specify all, single #, or range # #\n"
+        printf "ERROR no arguement\n"
         exit 1
     fi
 
@@ -85,13 +87,12 @@ delete()
         printf "$(($4 - $3 + 1)) records deleted\n"
 
     else
-        # catching if they have an incorrect arg
-        printf "ERROR: invalid delete argument: %s\n" "$2"
+        printf "ERROR invalid delete argument: %s\n" "$2"
         exit 1
     fi
 }
 
-
+#prints out the count in the database
 count()
 {
     if [ -f "$1" ]; 
@@ -100,11 +101,10 @@ count()
         printf "$(($count - 1))\n\n"
 
     else
-        printf "ERROR: %s does not exist\n" "$1"
+        printf "ERROR %s does not exist\n" "$1"
         exit 1
     fi
 }
-
 
 #checks for interactive mode
 if [ ! $# = 0 ]; 
@@ -112,30 +112,27 @@ then
     #not interactive mode
     if [ $# = 1 ]; 
     then
-        printf "ERROR: please specify a command and a database\n"
+        printf "ERROR please specify a command and a database\n"
         exit 1
     fi
 
     if [ $2 = "create" ]; 
-    then # create
+    then 
         if [ $# = 2 ]; 
         then
-            # if no name specified
-            create "$1" "Untitled Database"
 
-        else
             create "$1" "$3"
         fi
 
     elif [[ $2 = "insert" ]]; 
     then
-        # if they have all of the params
+        #checks for all the arguements then inserts them
         if [ $# = 6 ]; 
         then
             insert "$1" "$3" "$4" "$5" "$6"
 
         else
-            printf "ERROR: Insert requires 5 parameters.\n"
+            printf "ERROR Insert requires 5 parameters\n"
             exit 1
         fi
 
@@ -152,12 +149,14 @@ then
         count "$1"
 
     else
-        printf "ERROR: invalid command %s\n" "$2"
+        printf "ERROR invalid command %s\n" "$2"
         exit 1
     fi
 
-else # interactive mode
-    # looping until loop != y
+#interactive mode
+else 
+
+    #looping until loop != y
     loop="y"
     while [ $loop = "y" ]; 
     do
@@ -167,30 +166,24 @@ else # interactive mode
             read -p "Need a name of database to use: " db
         done
 
-        # now get the cmd
         read -p "Enter a command (create, display, count, insert, delete): " cmd
 
         if [ "$cmd" = "create" ]; 
         then 
             read -p "Header for the database: " header
-
             create "$db" "$header"
 
         elif [[ $cmd = "insert" || $cmd = "add" ]]; 
         then 
-            # insert
             read -p "Make: " make
             read -p "Model: " model
             read -p "Year: " year
             read -p "Color: " color
-            # call insert with params
             insert "$db" "$make" "$model" "$year" "$color"
 
         elif [ $cmd = "display" ]; 
-        then # display
-            # read in the display param
+        then
             read -p "How many to show (all, single, or range): " option
-            # check which display mode they want, for each mode read the needed params and call display
             if [ $option = "single" ]; 
             then
                 read -p "Which single: " single
@@ -207,20 +200,17 @@ else # interactive mode
                 display "$db" "$option"
 
             else
-                printf "ERROR: %s is not valid\n" "$option"
+                printf "ERROR %s is not valid\n" "$option"
 
             fi
 
         elif [ $cmd = "count" ]; 
         then 
-            # count
             count "$db"
 
         elif [ $cmd = "delete" ]; 
         then 
-            # delete
             read -p "How many to delete (all, single, or range): " option
-            # same logic as display but calling delte with the params gotten instead
             if [ $option = "single" ]; 
             then
                 read -p "Which single: " single
@@ -237,11 +227,11 @@ else # interactive mode
                 delete "$db" "$option"
 
             else
-                printf "ERROR: %s is not valid\n" "$option"
+                printf "ERROR %s is not valid\n" "$option"
             fi
 
         else
-            printf "ERROR: invalid command: %s\n" "$cmd"
+            printf "ERROR invalid command: %s\n" "$cmd"
             exit 1       
         fi
 
