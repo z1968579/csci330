@@ -5,7 +5,7 @@
 
 #!/bin/bash
 
-# creates database
+#creates database
 create() 
 {
     printf "%s\n" "$2" > "$1"
@@ -71,7 +71,7 @@ delete()
         exit 1
     fi
 
-    if  ["$2" = "all" ]; 
+    if  [ "$2" = "all" ]; 
     then
         sed -i '1!d' "$1"
         printf "All records deleted\n"
@@ -234,7 +234,7 @@ else
             printf "ERROR invalid command: %s\n" "$cmd"
             exit 1       
         fi
-
+        #asks for loop
         read -p "Do you want to continue? (y/n): " loop
     done
 fi
