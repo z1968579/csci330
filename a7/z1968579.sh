@@ -98,7 +98,7 @@ count()
     if [ -f "$1" ]; 
     then
         count=$(wc -l < "$1")
-        printf "$(($count - 1))\n\n"
+        printf "$(($count))\n\n"
 
     else
         printf "ERROR %s does not exist\n" "$1"
