@@ -4,14 +4,11 @@
 # 11/07/22
 
 BEGIN {
-    # Header for the report
-    print "Summary of Sales 2021\n\n";
-    printf("%-22s%-8s%s\n","Name", "ID", "Sales");
-    print "===================================";
-    # must change the field sep to : for this db
+    # prints the header for name tile salary
     FS = ":";
 }
 {
+
     if (NF == 3)
     {
         # This is an associate
@@ -34,6 +31,57 @@ BEGIN {
     }
 }
 END {
+        print "|= Spice Mining =============|======================|============|";
+    printf "| %-26s | %-20s | %-10s |", "   Name", "Title", "Salary";
+    print "\n|============================|======================|============|\n";
+    for (i in sales)
+    {
+        printf ("%-22s %s %10.2f\n",associates[i],i,sales[i]) | "sort -nr -k 4";
+    }
+    # close before printing anymore to avoid incorrect order due to sort still being open
+    close("sort -nr -k 4");
+
+    print "===================================";
+    printf ("%22d Associates\n", associatescount);
+    printf ("%22d Products\n", productcount);
+    printf ("%22d Transactions\n", transcount);
+}
+END {
+        print "|= Spice2 Mining =============|======================|============|";
+    printf "| %-26s | %-20s | %-10s |", "   Name", "Title", "Salary";
+    print "\n|============================|======================|============|\n";
+    for (i in sales)
+    {
+        printf ("%-22s %s %10.2f\n",associates[i],i,sales[i]) | "sort -nr -k 4";
+    }
+    # close before printing anymore to avoid incorrect order due to sort still being open
+    close("sort -nr -k 4");
+
+    print "===================================";
+    printf ("%22d Associates\n", associatescount);
+    printf ("%22d Products\n", productcount);
+    printf ("%22d Transactions\n", transcount);
+}
+END {
+        print "|= Spice3 Mining =============|======================|============|";
+    printf "| %-26s | %-20s | %-10s |", "   Name", "Title", "Salary";
+    print "\n|============================|======================|============|\n";
+    for (i in sales)
+    {
+        printf ("%-22s %s %10.2f\n",associates[i],i,sales[i]) | "sort -nr -k 4";
+    }
+    # close before printing anymore to avoid incorrect order due to sort still being open
+    close("sort -nr -k 4");
+
+    print "===================================";
+    printf ("%22d Associates\n", associatescount);
+    printf ("%22d Products\n", productcount);
+    printf ("%22d Transactions\n", transcount);
+}
+END {
+        print "|= Spice3 Mining =============|======================|============|";
+    printf "| %-26s | %-20s | %-10s |", "   Name", "Title", "Salary";
+    print "\n|============================|======================|============|\n";
     for (i in sales)
     {
         printf ("%-22s %s %10.2f\n",associates[i],i,sales[i]) | "sort -nr -k 4";
