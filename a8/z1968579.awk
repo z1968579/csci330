@@ -20,7 +20,7 @@ BEGIN {
     {
         ProjCount++;
         ProjId[$2] = $2;
-        ProjectName[$2] = $3;
+        #ProjectName[$2] = $3;
         #manager[$4] = $4;
     }
     else if ($1 == "W")
@@ -28,8 +28,6 @@ BEGIN {
 
         if (ProjId[$4] == 1)
         {
-            #print ProjId[$];
-            #print manager[$4];
             SpiceEmployees[$3] = $3;
             TotalSpice += salary[$3] * 1.0;
             SpiceCount++;
@@ -55,6 +53,7 @@ BEGIN {
     } 
 }
 END {
+    #prints Spice Mining
     print "|= Spice Mining =============|======================|============|";
     printf "| %-26s | %-20s | %-10s |", "   Name", "Title", "Salary";
     print "\n|============================|======================|============|";
@@ -62,6 +61,7 @@ END {
     {
         if (i == 140)
         {
+            #Checks for manager
             name[i]= "*" name[i];
         }
         printf ("| %-26s | %-20s | %-10i |\n", name[i], title[i], salary[i]) | "sort -rn -t '|' -k 4";
@@ -73,11 +73,13 @@ END {
     printf "\taverage salary: %.2f", TotalSpice / SpiceCount;
 }
 END {
+    #prints Bene Gesserit Schemes
     print "\n\n|= Bene Gesserit Schemes ====|======================|============|";
     printf "| %-26s | %-20s | %-10s |", "   Name", "Title", "Salary";
     print "\n|============================|======================|============|";
     for (i in BeneEmployees)
     {
+        #Checks for manager
         if (i == 192)
         {
             name[i]= "*" name[i];
@@ -91,11 +93,13 @@ END {
     printf "\taverage salary: %.2f", TotalBene / BeneCount;
 }
 END {
+    #prints Muad'Dib's Jihad
     print "\n\n|= Muad'Dib's Jihad =========|======================|============|";
     printf "| %-26s | %-20s | %-10s |", "   Name", "Title", "Salary";
     print "\n|============================|======================|============|";
     for (i in JihadEmployees)
     {
+        #Checks for manager
         if (i == 110)
         {
             name[i]= "*" name[i];
@@ -109,6 +113,7 @@ END {
     printf "\taverage salary: %.2f", TotalJihad / JihadCount;
 }
 END {
+    #prints security
     print "\n\n|= Security =================|======================|============|";
     printf "| %-26s | %-20s | %-10s |", "   Name", "Title", "Salary";
     print "\n|============================|======================|============|";
@@ -126,8 +131,7 @@ END {
     printf "   employed on project: %i", SecurityCount;
     printf "\taverage salary: %.2f", TotalSec / SecurityCount;
 
-
-
+    #prints the final data
     print "\n\nEmployees: ", EmpCount, " Projects: ", ProjCount;
     printf ("Total Salary: %25.2f ", TotalSal);
     printf ("\nEmployee Average Salary:  %13.2f ", TotalSal / EmpCount);
