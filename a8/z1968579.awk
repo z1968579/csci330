@@ -8,6 +8,20 @@ BEGIN {
     FS = ":";
 }
 {
+    if ($1 == "E")
+    {
+        employeecount++;
+        name[$1] = $3;
+    }
+    else if ($1 == "P")
+    {
+        projectcount++;
+        
+    }
+    else if ($1 == "W")
+    {
+
+    }
 
     if (NF == 3)
     {
@@ -20,7 +34,9 @@ BEGIN {
     {
         # This is a product
         productcount++;
+        #print cost[$1];
         cost[$1] = $4;
+
     }
     else if (NF == 5)
     {
@@ -36,7 +52,9 @@ END {
     print "\n|============================|======================|============|\n";
     for (i in sales)
     {
-        printf ("%-22s %s %10.2f\n",associates[i],i,sales[i]) | "sort -nr -k 4";
+        #printf ("%-22s %s %10.2f\n",associates[i],i,sales[i]) | "sort -nr -k 4";
+        print (name[$1]);
+        
     }
     # close before printing anymore to avoid incorrect order due to sort still being open
     close("sort -nr -k 4");
