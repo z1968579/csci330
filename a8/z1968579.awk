@@ -10,42 +10,56 @@ BEGIN {
     if ($1 == "E")
     {
         employeecount++;
-        id[$1] = $2;
-        name[$1] = $3;
-        title[$1] = $4;
-        salary[$1] = $5;
+        id[$2] = $2;
+        name[$2] = $3;
+        title[$2] = $4;
+        salary[$2] = $5;
+        totalsal += $5 * 1.0;
     }
     else if ($1 == "P")
     {
         projectcount++;
-        projectname[$1] = $3;
-        manager[$1] = $4;
+        projid[$2] = $2;
+        projectname[$2] = $3;
+        manager[$2] = $4;
     }
     else if ($1 == "W")
     {
-        for (i in id)
+        if (projid[$4] == 1)
         {
-            if (id[i] == $3)
-            {       
-                #workingon[$2] = $4; I am not sure how to do this part
-            }
+            SpiceEmployees[$3] = $3;
+        }
+        else if (projid[$4] == 2)
+        {
+            BeneEmployees[$3] = $3;
+        }
+        else if (projid[$4] == 3)
+        {
+            JihadEmployees[$3] = $3;
+        }
+        else if (projid[$4] == 4)
+        {
+            SecurityEmployees[$3] = $3;
         }
     } 
 }
 END {
-    for (j = 0; j <= 3; j++) # I do not think this works
+    print "|= Spice Mining =============|======================|============|";
+    printf "| %-26s | %-20s | %-10s |", "   Name", "Title", "Salary";
+    print "\n|============================|======================|============|";
+    for (i in SpiceEmployees)
     {
-        print "|= ",projectname[j], "=============|======================|============|";
-        printf "| %-26s | %-20s | %-10s |", "   Name", "Title", "Salary";
-        print "\n|============================|======================|============|\n";
-        for (i in )
-        {
-            #printf print variables then pipe to sort | "sort -nr -k 4";
-            
-        }
-        # close before printing anymore to avoid incorrect order due to sort still being open
-        #close("sort -nr -k 4");
-        #print closing stuff
+        printf ("| %-26s | %-20s | %-10.0f |\n", name[i], title[i], salary[i]) | "sort -nr -k 3";
+        #print i, name[i];
+        #printf ("%-22s %s %10.2f\n",associates[i],i,sales[i]) | "sort -nr -k 4";
+        close("sort -nr -k 3");
     }
+    # close before printing anymore to avoid incorrect order due to sort still being open
+    close("sort -nr -k 6");
+    #print closing stuff
+    print "Employees: ", employeecount, " Projects: ", projectcount;
+    printf ("Total Salary: %.2f ", totalsal);
+    printf ("\nEmployee Average Salary:  %.2f ", totalsal / employeecount);
+    print "";
     #print more closing stuff
 }
