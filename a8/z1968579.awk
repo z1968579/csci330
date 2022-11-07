@@ -9,37 +9,48 @@ BEGIN {
 {
     if ($1 == "E")
     {
-        employeecount++;
+        EmpCount++;
         id[$2] = $2;
         name[$2] = $3;
         title[$2] = $4;
         salary[$2] = $5;
-        totalsal += $5 * 1.0;
+        TotalSal += $5 * 1.0;
     }
     else if ($1 == "P")
     {
-        projectcount++;
-        projid[$2] = $2;
-        projectname[$2] = $3;
-        manager[$2] = $4;
+        ProjCount++;
+        ProjId[$2] = $2;
+        ProjectName[$2] = $3;
+        #manager[$4] = $4;
     }
     else if ($1 == "W")
     {
-        if (projid[$4] == 1)
+
+        if (ProjId[$4] == 1)
         {
+            #print ProjId[$];
+            #print manager[$4];
             SpiceEmployees[$3] = $3;
+            TotalSpice += salary[$3] * 1.0;
+            SpiceCount++;
         }
-        else if (projid[$4] == 2)
+        else if (ProjId[$4] == 2)
         {
             BeneEmployees[$3] = $3;
+            TotalBene += salary[$3] * 1.0;
+            BeneCount++;
         }
-        else if (projid[$4] == 3)
+        else if (ProjId[$4] == 3)
         {
             JihadEmployees[$3] = $3;
+            TotalJihad += salary[$3] * 1.0;
+            JihadCount++;
         }
-        else if (projid[$4] == 4)
+        else if (ProjId[$4] == 4)
         {
             SecurityEmployees[$3] = $3;
+            TotalSec += salary[$3] * 1.0;
+            SecurityCount++;
         }
     } 
 }
@@ -49,17 +60,76 @@ END {
     print "\n|============================|======================|============|";
     for (i in SpiceEmployees)
     {
-        printf ("| %-26s | %-20s | %-10.0f |\n", name[i], title[i], salary[i]) | "sort -nr -k 3";
-        #print i, name[i];
-        #printf ("%-22s %s %10.2f\n",associates[i],i,sales[i]) | "sort -nr -k 4";
-        close("sort -nr -k 3");
+        if (i == 140)
+        {
+            name[i]= "*" name[i];
+        }
+        printf ("| %-26s | %-20s | %-10i |\n", name[i], title[i], salary[i]) | "sort -rn -t '|' -k 4";
     }
     # close before printing anymore to avoid incorrect order due to sort still being open
-    close("sort -nr -k 6");
-    #print closing stuff
-    print "Employees: ", employeecount, " Projects: ", projectcount;
-    printf ("Total Salary: %.2f ", totalsal);
-    printf ("\nEmployee Average Salary:  %.2f ", totalsal / employeecount);
+    close("sort -rn -t '|' -k 4");
+    print "|============================|======================|============|";
+    printf "   employed on project: %i", SpiceCount;
+    printf "\taverage salary: %.2f", TotalSpice / SpiceCount;
+}
+END {
+    print "\n\n|= Bene Gesserit Schemes ====|======================|============|";
+    printf "| %-26s | %-20s | %-10s |", "   Name", "Title", "Salary";
+    print "\n|============================|======================|============|";
+    for (i in BeneEmployees)
+    {
+        if (i == 192)
+        {
+            name[i]= "*" name[i];
+        }
+        printf ("| %-26s | %-20s | %-10i |\n", name[i], title[i], salary[i]) | "sort -rn -t '|' -k 4";
+    }
+    # close before printing anymore to avoid incorrect order due to sort still being open
+    close("sort -rn -t '|' -k 4");
+    print "|============================|======================|============|";
+    printf "   employed on project: %i", BeneCount;
+    printf "\taverage salary: %.2f", TotalBene / BeneCount;
+}
+END {
+    print "\n\n|= Muad'Dib's Jihad =========|======================|============|";
+    printf "| %-26s | %-20s | %-10s |", "   Name", "Title", "Salary";
+    print "\n|============================|======================|============|";
+    for (i in JihadEmployees)
+    {
+        if (i == 110)
+        {
+            name[i]= "*" name[i];
+        }
+        printf ("| %-26s | %-20s | %-10i |\n", name[i], title[i], salary[i]) | "sort -rn -t '|' -k 4";
+    }
+    # close before printing anymore to avoid incorrect order due to sort still being open
+    close("sort -rn -t '|' -k 4");
+    print "|============================|======================|============|";
+    printf "   employed on project: %i", JihadCount;
+    printf "\taverage salary: %.2f", TotalJihad / JihadCount;
+}
+END {
+    print "\n\n|= Security =================|======================|============|";
+    printf "| %-26s | %-20s | %-10s |", "   Name", "Title", "Salary";
+    print "\n|============================|======================|============|";
+    for (i in SecurityEmployees)
+    {
+        if (i == 130)
+        {
+            name[i]= "*" name[i];
+        }
+        printf ("| %-26s | %-20s | %-10i |\n", name[i], title[i], salary[i]) | "sort -rn -t '|' -k 4";
+    }
+    # close before printing anymore to avoid incorrect order due to sort still being open
+    close("sort -rn -t '|' -k 4");
+    print "|============================|======================|============|";
+    printf "   employed on project: %i", SecurityCount;
+    printf "\taverage salary: %.2f", TotalSec / SecurityCount;
+
+
+
+    print "\n\nEmployees: ", EmpCount, " Projects: ", ProjCount;
+    printf ("Total Salary: %25.2f ", TotalSal);
+    printf ("\nEmployee Average Salary:  %13.2f ", TotalSal / EmpCount);
     print "";
-    #print more closing stuff
 }
