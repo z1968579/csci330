@@ -33,22 +33,19 @@ BEGIN {
     } 
 }
 END {
-    for (j = 0; j <= 3; j++)
+    for (j = 0; j <= 3; j++) # I do not think this works
     {
         print "|= ",projectname[j], "=============|======================|============|";
-    printf "| %-26s | %-20s | %-10s |", "   Name", "Title", "Salary";
-    print "\n|============================|======================|============|\n";
-    for (i in sales)
-    {
-        #printf ("%-22s %s %10.2f\n",associates[i],i,sales[i]) | "sort -nr -k 4";
-        
+        printf "| %-26s | %-20s | %-10s |", "   Name", "Title", "Salary";
+        print "\n|============================|======================|============|\n";
+        for (i in )
+        {
+            #printf print variables then pipe to sort | "sort -nr -k 4";
+            
+        }
+        # close before printing anymore to avoid incorrect order due to sort still being open
+        #close("sort -nr -k 4");
+        #print closing stuff
     }
-    }
-    # close before printing anymore to avoid incorrect order due to sort still being open
-    close("sort -nr -k 4");
-
-    print "===================================";
-    printf ("%22d Associates\n", associatescount);
-    printf ("%22d Products\n", productcount);
-    printf ("%22d Transactions\n", transcount);
+    #print more closing stuff
 }
