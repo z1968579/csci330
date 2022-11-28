@@ -21,10 +21,10 @@ using namespace std;
 
 void chomp(char *s)
 {
-	for (char *p = s + strlen(s) - 1; // start at the end of string
-		 *p == '\r' || *p == '\n';	  // while there is a trailing \r or \n
-		 p--)						  // check next character from back
-		*p = '\0';					  // change \r or \n to \0
+	for (char *p = s + strlen(s) - 1; *p == '\r' || *p == '\n'; p--)
+	{					  
+		*p = '\0';					  
+	}
 }
 
 int main(int argc, char *argv[])
@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
 	// The user MUST specify port and directory
 	if (argc != 3)
 	{
-		cerr << "error: port and directory needed" << endl;
+		cerr << "ERROR: port and directory needed" << endl;
 		exit(1);
 	}
 	char buffer[257];
@@ -140,7 +140,7 @@ int main(int argc, char *argv[])
 							exit(1);
 						}
 					}
-					cout << endl;
+					cout << endl << endl;
 					close(fd);
 				}
 				else
@@ -152,6 +152,7 @@ int main(int argc, char *argv[])
 						perror("error opening dir: ");
 						exit(1);
 					}
+				cout << endl << endl;
 
 					// Getting all directory entry
 					struct dirent *dirEntry;
@@ -185,7 +186,7 @@ int main(int argc, char *argv[])
 					perror("open");
 					exit(1);
 				}
-
+				cout << endl << endl;
 				int number_read;
 				while ((number_read = read(fd, buffer, 256)) != 0)
 				{
@@ -201,6 +202,7 @@ int main(int argc, char *argv[])
 						exit(1);
 					}
 				}
+				cout << endl << endl;
 				close(fd);
 			}
 		}
