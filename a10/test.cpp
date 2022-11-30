@@ -1,3 +1,8 @@
+#include <iostream>
+#include <string.h>
+#include <fstream>
+#include <unistd.h>
+#include <cstdlib>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -5,221 +10,202 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <dirent.h>
-#include <string.h>
-#include <fstream>
-#include <iostream>
-#include <unistd.h>
-#include <cstdlib>
 
 using namespace std;
 
-void sendFile(char*, int);
-//void chomp(char*);
-bool inExist(const char*);
-bool isFile(const char*);
+void printFile(char*, int);
 
-int main(int argc, char **argv)
+int main(int argc, char *argv[])
 {
+    char* port = argv[1];
+    char* root = argv[2];
 
-    //Making sure all arguments are here before starting
-    if (argc != 3)
+    if (argc != 3) //Checks arguments
     {
-        cerr << "Invalid command!\nUsage: portnumber directory\n";
-        cerr << "Exiting..";
+        cerr << "Error: Not enough arguments\nUsage: " << argv[0] << " (port) (directory)" << endl;
         exit(1);
     }
 
-
-    DIR * gdir;
-    int succh;
-    int newsockfd;
+    DIR* pdir;
+    int sockfd, newsockfd;
     char buffer[256];
-    socklen_t serverlen = sizeof(sockaddr_in);
-    socklen_t clientlen = sizeof(sockaddr_in);
-    ssize_t received;
-    char * comansp[2];
-    char * webDir = argv[2];
+    char* get[2];
+    struct sockaddr_in server;
+    struct sockaddr_in user;
+    struct dirent* dir;
+    struct stat stbuffer;
+    socklen_t userlen = sizeof(user);
 
+    cout << "Starting server" << endl;
 
-    //Creating a new socket, then checking to see if socket fails
-    int sockfd = socket(AF_INET, SOCK_STREAM, 0);
-    if (sockfd < 0)
+    //Creating a new socket and checking to see if socket fails
+    if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
     {
-        cerr << "Failed to create socket\n";
-        cerr << "Exiting..";
-        exit(1);
+        cerr << "Error: Failed to create socket\n";
+        exit(2);
     }
 
-    struct sockaddr_in server;
-    struct sockaddr_in client;
-    struct stat stbuffer;
-    //Setting values for the server as default
+    pdir = opendir(root);
+    if (pdir == NULL)
+    {
+        cerr << "Error: Directory does not exist\n";
+        exit(13);
+    } 
+    closedir(pdir);
+
+    //Setting up the server
     memset(&server, 0, sizeof(server));
     server.sin_family = AF_INET;
     server.sin_addr.s_addr = INADDR_ANY;
     server.sin_port = htons(atoi(argv[1]));
 
-    serverlen = sizeof(server);
 
-    //Proceeding to bind soicket, checking to see if it fails
-    succh = bind(sockfd, (struct sockaddr*) &server, serverlen);
-    if (succh < 0)
+    //Binds the socket to the server and checks to see if bind fails
+    cout << "Binding socket" << endl;
+    if ((bind(sockfd, (struct sockaddr*) &server, sizeof(server))) < 0)
     {
-        cerr << "Could not bind\n";
-        cerr << "Exiting..";
-        exit(1);
+        cerr << "Error: Could not bind to port\n";
+        exit(3);
     }
 
-    //Proceeding to listen to socket, then checking to see if it fails
-    succh = listen(sockfd, 128);
-    if (succh < 0)
+    //Listens for connections and checks to see if listen fails
+    cout << "Listening to socket" << endl;
+    if ((listen(sockfd, 64)) < 0)
     {
-        cerr << "Could not listen\n";
-        cerr << "Exiting..";
-        exit(1);
+        cerr << "Error: Could not listen\n";
+        exit(4);
     }
+
+    cout << "Server is running on port: " << port << endl;
+    cout << "Waiting for connection" << endl;
    
-   
-    clientlen = sizeof(client);
-   
-    //Proceeding until it breaks
+    //loops until the server is killed/breaks
     while (true)
     {
-        //Accepting new connections
-        newsockfd = accept(sockfd, (struct sockaddr*) &client, &clientlen);
-
-        //check to see if the connection failed
-        if (newsockfd < 0)
+        
+        //Accepts users and checks to see if the connection failed
+        if ((newsockfd = accept(sockfd, (struct sockaddr*) &user, &userlen)) < 0)
         {
-            cerr << "Could not accept\n";
-            cerr << "Exiting..";
-            exit(1);
+            cerr << "Error: Could not accept\n";
+            exit(5);
         }
 
 
-        //Splitting connections, then allowing parent to accept new request
-        //Child will handle the request
+        //Splits connections for multiple users
         if (fork()) //Parent
         {
+            cout << "New connection" << endl;
             close(newsockfd);
         }
-        else //Child
+        else //Child handles user requests
         {
-            //Read what is being read, then check to see if read fails
-            received = read(newsockfd, buffer, 256);
-            if (received < 0)
+            //Receives the request from the user and checks to see if the request failed
+            if ((read(newsockfd, buffer, 256)) < 0)
             {
-                cerr << "Could not get message\n";
-                cerr << "Exiting..";
-                exit(1);
+                cerr << "Error: Could not get request\n";
+                exit(6);
             }
 
-            cout << buffer;
-            //check to see if GET was recived as a command
-            comansp[0] = strtok(buffer, " ");
-            if (strcmp(comansp[0], "GET") == 0)
+            cout << "User request: " << buffer << endl;
+
+            //Checks for GET request
+            get[0] = strtok(buffer, " ");
+            if (strcmp(get[0], "GET") == 0)
             {
-                comansp[1] = strtok(NULL, " \n");
+                get[1] = strtok(NULL, " \n");
 
-                //check to see if msg began with a '/'
-                if (comansp[1][0] != '/')
+                //Checks for '/'
+                if (get[1][0] != '/')
                 {
-                    char errorMsg[] = "GET Request must begin with a '/'!\n";
-                    write(newsockfd, errorMsg, strlen(errorMsg));
-                    exit(1);
+                    char error[] = "Error: GET request must start with /\n";
+                    write(newsockfd, error, strlen(error));
+                    exit(7);
                 }
 
-                //check to see if msg contained '..'
-                if (strstr(comansp[1], "..") != NULL)
+                //Checks for '..'
+                if (strstr(get[1], "..") != NULL)
                 {
-                    char errorMsg[] = "GET Request cannot contain \"..\"\n";
-                    write(newsockfd, errorMsg, strlen(errorMsg));
-                    exit (1);
+                    char error[] = "Error: GET request cannot contain \"..\"\n";
+                    write(newsockfd, error, strlen(error));
+                    exit (7);
                 }
 
-
-                for (char *p = comansp[1] + strlen(comansp[1])-1; *p == '\r' || *p == '\n'; p--)
+                for (char *p = get[1] + strlen(get[1])-1; *p == '\r' || *p == '\n'; p--)//replaces new lines and returns with null
                 {
                     *p = '\0';
                 }
-                //chomp(comansp[1]);
-                strcat(webDir, comansp[1]);
 
-                //check if the last character in the path is a '/'
-                if (webDir[strlen(webDir)-1] != '/')
+                strcat(root, get[1]);
+
+                //Checks for '/'
+                if (root[strlen(root) - 1] != '/')
                 {
-                    //double check to see if the path is a file
-                    if ((stbuffer.st_mode & S_IFMT) == S_IFREG)
+                    //Checks for file path
+                    stat(root, &stbuffer);
+                    if ((stbuffer.st_mode &S_IFMT) == S_IFREG)
                     {
-                        sendFile(webDir, newsockfd);
+                        printFile(root, newsockfd);
                         close(newsockfd);
-                        exit(1);
+                        exit(8);
                     }
                 }
-                else //path refers to a directory
-                {
-                    char indexPath[128];
-                    char indexName[] = "index.html";
-                    strcpy(indexPath, webDir);
-                    strcat(indexPath, indexName);
-                    for (char *p = indexPath + strlen(indexPath)-1; *p == '\r' || *p == '\n'; p--)
+                else //Path refers to a directory
+                {    
+                    char path[128];
+                    strcpy(path, root);
+                    strcat(path, "index.html");
+
+                    for (char *p = path + strlen(path)-1; *p == '\r' || *p == '\n'; p--)
                     {
                         *p = '\0';
                     }
-                    //chomp(indexPath);
                     
-                    //check to see if the directory contains 'index.html'
-                    if ((stat(indexPath, &stbuffer)) == 0)
+                    //Checks for index.html
+                    if ((stat(path, &stbuffer)) == 0)
                     {
-                        sendFile(indexPath, newsockfd);
-                        sleep(10);
+                        printFile(path, newsockfd);
                         close(newsockfd);
-                        exit(1);
+                        exit(9);
                     }
                 }
 
-                //attempt to open requested directory
-                gdir = opendir((const char*) webDir);
-                if (gdir == NULL)
+                //Opens directory and checks for error
+                //pdir = opendir(root);
+                if ((pdir = opendir(root)) == NULL)
                 {
-                    char errorMsg[] = "File or directory does not exist\n";
-                    write(newsockfd, errorMsg, strlen(errorMsg));
-                    exit(1);
+                    char error[] = "Error: File or directory does not exist\n";
+                    write(newsockfd, error, strlen(error));
+                    exit(10);
                 } 
 
-                struct dirent* thedir;
-
-                //redirect everything that would be outputted on to cout
-                //and output it to the client
+                //dup2 newsockfd to stdout
                 if (dup2(newsockfd, 1) < 0)
                 {
-                    cerr << "Socket dup2 has failed\n";
-                    cerr << "Exiting..";
-                    exit(1);
+                    cerr << "Error: dup2 failed\n";
+                    exit(11);
                 }
 
-                //read the contents of a directory and print the name
-                //of each file/directory
-                while ((thedir = readdir(gdir)) != NULL)
+                //Prints directory contents
+                while ((dir = readdir(pdir)) != NULL)
                 {
-                    if (thedir->d_name[0] != '.')
+                    if (dir->d_name[0] != '.')
                     {
-                        cout << thedir->d_name << endl;
+                        cout << dir->d_name << endl;
                     }
                 }
 
             }
-            else //request didn't start with 'GET'
+            else //Error if request is not GET
             {
-                char errorMsg[] = "Any request must start with 'GET'!\n";
-                write(newsockfd, errorMsg, strlen(errorMsg));
+                char error[] = "Request must start with GET\n";
+                write(newsockfd, error, strlen(error));
             }
 
             close(newsockfd);
-            exit(1);
+            exit(12);
         }
 
-        //Null out the buffer
+        //buffer to null
         memset(buffer, 0, sizeof(buffer));
     }
 
@@ -227,66 +213,37 @@ int main(int argc, char **argv)
     return 0;
 }
 
-//sendFile Function
+//printFile Function
 //Sends contents of requested file to a set
 //file descriptor
-void sendFile(char* pName, int fdSock)
+/**
+ * @brief Prints the contents of a file to a file descriptor like cat
+ * 
+ * @param path_name The path of the file to be printed
+ * @param fd 
+ */
+void printFile(char* path_name, int fd)
 {
-    int openFd;
-    char buffer[256];
-    ssize_t bytesr;
-    char errmsg[] = "File does not exist\n";
+    int open_fd;
+    char buffer[1024];
+    ssize_t nr;
+    
+    open_fd = open(path_name, O_RDONLY);
 
-    openFd = open(pName, O_RDWR);
-
-    if (openFd < 0)
+    if (open_fd < 0)
     {
-        write(fdSock, errmsg, strlen(errmsg));
+        char error[] = "Error: File does not exist\n";
+        write(fd, error, strlen(error));
         exit(1);
     }
 
-    bytesr = read(openFd, (char*) buffer, 256);
-    write(fdSock, buffer, (size_t) bytesr);
-    while ((int) bytesr >= 256)
+    nr = read(open_fd, buffer, 1024);
+    write(fd, buffer, nr);
+
+    while (nr >= 1024)
     {
-        bytesr = read(openFd, (char*) buffer, 256);
-        write(fdSock, buffer, (size_t) bytesr);
+        nr = read(open_fd, buffer, 1024);
+        write(fd, buffer, nr);
     }
 }
 
-//Exists Function
-//Checks to see if file exists
-/*
-bool inExist(const char* name)
-{
-    struct stat buffer;
-    return (stat(name, &buffer) == 0);
-}
-*/
-//isFile Function
-//Checks to see if the requested name is
-//an actual file or directory
-bool isFile(const char* name)
-{
-    bool rv = false;
-    struct stat buffer;
-    stat(name, &buffer);
-    if ((buffer.st_mode & S_IFMT) == S_IFREG)
-    {
-        rv = true;
-    }
-    return rv;
-}
-
-//Chomp Function
-//Will remove leading returns and newlines
-//will then replace with null characters
-/*
-void chomp(char *s) 
-{
-    for (char *p = s + strlen(s)-1; *p == '\r' || *p == '\n'; p--)
-    {
-        *p = '\0';
-    }
-}
-*/
