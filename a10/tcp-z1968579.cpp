@@ -1,5 +1,5 @@
 #include <iostream>
-#include <string.h>
+#include <cstring>
 #include <fstream>
 #include <unistd.h>
 #include <cstdlib>
@@ -26,32 +26,31 @@ int main(int argc, char *argv[])
         exit(1);
     }
 
-    DIR* pdir;
-    int sockfd, newsockfd;
+    DIR* p_dir;
+    int sock_fd, new_sock_fd;
     char buffer[256];
     char* get[2];
     struct sockaddr_in server;
     struct sockaddr_in user;
     struct dirent* dir;
-    struct stat stbuffer;
-    socklen_t userlen = sizeof(user);
+    struct stat st_buffer;
+    socklen_t user_len = sizeof(user);
 
     cout << "Starting server" << endl;
 
     //Creating a new socket and checking to see if socket fails
-    if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+    if ((sock_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
     {
         cerr << "Error: Failed to create socket\n";
         exit(2);
     }
 
-    pdir = opendir(root);
-    if (pdir == NULL)
+    if ((p_dir = opendir(root)) == NULL)
     {
         cerr << "Error: Directory does not exist\n";
         exit(13);
     } 
-    closedir(pdir);
+    closedir(p_dir);
 
     //Setting up the server
     memset(&server, 0, sizeof(server));
@@ -62,7 +61,7 @@ int main(int argc, char *argv[])
 
     //Binds the socket to the server and checks to see if bind fails
     cout << "Binding socket" << endl;
-    if ((bind(sockfd, (struct sockaddr*) &server, sizeof(server))) < 0)
+    if ((bind(sock_fd, (struct sockaddr*) &server, sizeof(server))) < 0)
     {
         cerr << "Error: Could not bind to port\n";
         exit(3);
@@ -70,7 +69,7 @@ int main(int argc, char *argv[])
 
     //Listens for connections and checks to see if listen fails
     cout << "Listening to socket" << endl;
-    if ((listen(sockfd, 64)) < 0)
+    if ((listen(sock_fd, 64)) < 0)
     {
         cerr << "Error: Could not listen\n";
         exit(4);
@@ -82,31 +81,30 @@ int main(int argc, char *argv[])
     //loops until the server is killed/breaks
     while (true)
     {
-        
         //Accepts users and checks to see if the connection failed
-        if ((newsockfd = accept(sockfd, (struct sockaddr*) &user, &userlen)) < 0)
+        if ((new_sock_fd = accept(sock_fd, (struct sockaddr*) &user, &user_len)) < 0)
         {
             cerr << "Error: Could not accept\n";
             exit(5);
         }
 
-
         //Splits connections for multiple users
         if (fork()) //Parent
         {
-            cout << "New connection" << endl;
-            close(newsockfd);
+            char* ip = inet_ntoa(user.sin_addr);
+            cout << "New connection from: " << ip <<  endl;
+            close(new_sock_fd);
         }
         else //Child handles user requests
         {
             //Receives the request from the user and checks to see if the request failed
-            if ((read(newsockfd, buffer, 256)) < 0)
+            if ((read(new_sock_fd, buffer, 256)) < 0)
             {
                 cerr << "Error: Could not get request\n";
                 exit(6);
             }
 
-            cout << "User request: " << buffer << endl;
+            cout << "User request: " << buffer;
 
             //Checks for GET request
             get[0] = strtok(buffer, " ");
@@ -118,7 +116,7 @@ int main(int argc, char *argv[])
                 if (get[1][0] != '/')
                 {
                     char error[] = "Error: GET request must start with /\n";
-                    write(newsockfd, error, strlen(error));
+                    write(new_sock_fd, error, strlen(error));
                     exit(7);
                 }
 
@@ -126,7 +124,7 @@ int main(int argc, char *argv[])
                 if (strstr(get[1], "..") != NULL)
                 {
                     char error[] = "Error: GET request cannot contain \"..\"\n";
-                    write(newsockfd, error, strlen(error));
+                    write(new_sock_fd, error, strlen(error));
                     exit (7);
                 }
 
@@ -141,11 +139,11 @@ int main(int argc, char *argv[])
                 if (root[strlen(root) - 1] != '/')
                 {
                     //Checks for file path
-                    stat(root, &stbuffer);
-                    if ((stbuffer.st_mode &S_IFMT) == S_IFREG)
+                    stat(root, &st_buffer);
+                    if ((st_buffer.st_mode &S_IFMT) == S_IFREG)
                     {
-                        printFile(root, newsockfd);
-                        close(newsockfd);
+                        printFile(root, new_sock_fd);
+                        close(new_sock_fd);
                         exit(8);
                     }
                 }
@@ -161,32 +159,32 @@ int main(int argc, char *argv[])
                     }
                     
                     //Checks for index.html
-                    if ((stat(path, &stbuffer)) == 0)
+                    if ((stat(path, &st_buffer)) == 0)
                     {
-                        printFile(path, newsockfd);
-                        close(newsockfd);
+                        printFile(path, new_sock_fd);
+                        close(new_sock_fd);
                         exit(9);
                     }
                 }
 
                 //Opens directory and checks for error
-                //pdir = opendir(root);
-                if ((pdir = opendir(root)) == NULL)
+                //p_dir = opendir(root);
+                if ((p_dir = opendir(root)) == NULL)
                 {
                     char error[] = "Error: File or directory does not exist\n";
-                    write(newsockfd, error, strlen(error));
+                    write(new_sock_fd, error, strlen(error));
                     exit(10);
                 } 
 
-                //dup2 newsockfd to stdout
-                if (dup2(newsockfd, 1) < 0)
+                //dup2 new_sock_fd to stdout
+                if (dup2(new_sock_fd, 1) < 0)
                 {
                     cerr << "Error: dup2 failed\n";
                     exit(11);
                 }
 
                 //Prints directory contents
-                while ((dir = readdir(pdir)) != NULL)
+                while ((dir = readdir(p_dir)) != NULL)
                 {
                     if (dir->d_name[0] != '.')
                     {
@@ -198,10 +196,10 @@ int main(int argc, char *argv[])
             else //Error if request is not GET
             {
                 char error[] = "Request must start with GET\n";
-                write(newsockfd, error, strlen(error));
+                write(new_sock_fd, error, strlen(error));
             }
 
-            close(newsockfd);
+            close(new_sock_fd);
             exit(12);
         }
 
@@ -209,18 +207,16 @@ int main(int argc, char *argv[])
         memset(buffer, 0, sizeof(buffer));
     }
 
-    close(sockfd);
+    close(sock_fd);
     return 0;
 }
 
-//printFile Function
-//Sends contents of requested file to a set
-//file descriptor
+
 /**
  * @brief Prints the contents of a file to a file descriptor like cat
  * 
  * @param path_name The path of the file to be printed
- * @param fd 
+ * @param fd sock_fd
  */
 void printFile(char* path_name, int fd)
 {
@@ -237,12 +233,8 @@ void printFile(char* path_name, int fd)
         exit(1);
     }
 
-    nr = read(open_fd, buffer, 1024);
-    write(fd, buffer, nr);
-
-    while (nr >= 1024)
+    while ((nr = read(open_fd, buffer, 1024)) > 0)
     {
-        nr = read(open_fd, buffer, 1024);
         write(fd, buffer, nr);
     }
 }
