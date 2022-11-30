@@ -1,3 +1,10 @@
+ /**
+ * @file tcp-z1968579.cpp
+ * @author Jacob Rudawski z1968579
+ * @brief CSCI 330 Assignment 10
+ * @date 11/30/2022
+ */
+
 #include <iostream>
 #include <cstring>
 #include <fstream>
