@@ -226,13 +226,6 @@ void printFile(char* path_name, int fd)
     
     open_fd = open(path_name, O_RDONLY);
 
-    if (open_fd < 0)
-    {
-        char error[] = "Error: File does not exist\n";
-        write(fd, error, strlen(error));
-        exit(1);
-    }
-
     while ((nr = read(open_fd, buffer, 1024)) > 0)
     {
         write(fd, buffer, nr);
